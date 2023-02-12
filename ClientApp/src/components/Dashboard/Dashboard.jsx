@@ -3,20 +3,14 @@ import React from 'react'
 import { Badge, Table } from 'reactstrap'
 import Summary from './Summary'
 
-
 function Dashboard() {
-
     return (
         <div>
             <h1>Dashboard</h1>
             <p className="text-muted ms-1">Dashboard</p>
-
-
             <div className="bg-light p-2">
-
                 <Summary />
-
-                <Table responsive bordered hover>
+                <Table responsive bordered hover className='bg-white'>
                     <thead>
                         <tr>
                             <th>ID</th>
