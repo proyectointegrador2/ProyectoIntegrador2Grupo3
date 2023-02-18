@@ -1,9 +1,26 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Badge, Table } from 'reactstrap'
 import Summary from './Summary'
 
+
 function Dashboard() {
+
+    useEffect(() => {
+        //TODO this code is not supposed to be used in the future. Just for testing objectives.
+        
+        // fetch("api/user")
+        //  .then(data => data.json())
+        //  .then(res => console.log(res))
+        //  .catch(err => console.error(err))
+
+        // fetch("api/user/1")
+        //     .then(data => data.json())
+        //     .then(res => console.log(res))
+        //     .catch(err => console.error(err))
+
+    },[])
+
     return (
         <div>
             <h1>Dashboard</h1>
