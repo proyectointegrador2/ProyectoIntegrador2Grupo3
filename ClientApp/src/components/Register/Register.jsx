@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { Card, Col, Form, Row, Input, InputGroupText, Button, Label, FormGroup, FormFeedback } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEnvelope } from '@fortawesome/free-regular-svg-icons'
@@ -35,7 +35,23 @@ function Register() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(values);
+            const request = {
+                Nombre: values.name,
+                Apellido: values.lastName,
+                NombreUsuario: values.username,
+                Correo: values.email,
+                Password: values.password,
+                Telefono: values.phone
+            }
+
+            fetch('api/user/register', {
+                method: 'POST',
+                body: JSON.stringify(request),
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.error(err))
         }
     })
   return (
