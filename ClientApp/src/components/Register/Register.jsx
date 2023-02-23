@@ -19,7 +19,8 @@ const validationSchema = Yup.object({
     password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
     confirmPassword: Yup.string("Confirme la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Confirme la contraseña")
      .oneOf([Yup.ref('password'), null], "La contraseña debe de coincidir"),
-    phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido")
+    phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
+    termsAndConditions: Yup.boolean().oneOf([true], "Acepte los terminos y condiciones")
 })
 
 function Register() {
@@ -31,7 +32,8 @@ function Register() {
             email: '',
             password: '',
             confirmPassword: '',
-            phone: ''
+            phone: '',
+            termsAndConditions: false
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -217,8 +219,22 @@ function Register() {
                             <Row className='justify-content-center pt-2 pb-2'>
                                 <Col md={6}>
                                     <FormGroup check className='m-auto'>
-                                        <Input type='checkbox' />
-                                        <Label check>Aceptar términos y condiciones</Label>
+                                        <Input 
+                                         id='termsAndConditions' 
+                                         name='termsAndConditions' 
+                                         type='checkbox' 
+                                         checked={formik.values.termsAndConditions} 
+                                         onChange={formik.handleChange} 
+                                         onBlur={formik.handleBlur} 
+                                         invalid={formik.touched.termsAndConditions && Boolean(formik.errors.termsAndConditions)}
+                                         />
+                                        <Label htmlFor='termsAndConditions' check>Aceptar términos y condiciones</Label>
+                                        {
+                                            formik.errors.termsAndConditions && 
+                                            <FormFeedback>
+                                            {formik.errors.termsAndConditions}
+                                            </FormFeedback>
+                                        }
                                     </FormGroup>
                                 </Col>
                             </Row>
