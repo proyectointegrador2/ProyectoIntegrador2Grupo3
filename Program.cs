@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddDbContext<CarDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")
     )
@@ -39,6 +41,9 @@ else
         c.RoutePrefix = "ventasApi/swagger";
     });
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
