@@ -1,9 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DB.Data.Entities;
+using DB.Data.Requests;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Entities;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using SistemaDeInventarioDeVentaDeVehiculos.Utils;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using BC = BCrypt.Net.BCrypt;
 
 namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 {
@@ -12,10 +19,12 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     public class UserController : ControllerBase
     {
         private readonly CarDbContext _context;
+        IConfiguration _configuration;
 
-        public UserController(CarDbContext context)
+        public UserController(CarDbContext context, IConfiguration configuration)
         {
-            _context = context; 
+            _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/<UserController>
@@ -37,44 +46,113 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             var user = await _context.Users.FindAsync(id);
 
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             return Ok(user);
         }
 
-        // POST api/<UserController>
+        // POST api/<UserController>/register
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            //TODO Create User
-
             // Verificar si el correo electrónico ya está registrado
             if (await _context.Users.AnyAsync(u => u.Correo == user.Correo))
             {
-                return BadRequest("Este correo electrónico ya ha sido registrado.");
+                return BadRequest(new OperationResult("Este correo electrónico ya ha sido registrado.", false));
             }
 
             // Hashear la contraseña con BCrypt
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            string hashedPassword = BC.HashPassword(user.Password);
 
             // Agregar el usuario a la base de datos
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Cuenta de usuario creada exitosamente." });
+            return Ok(new OperationResult("Cuenta de usuario creada exitosamente.", true));
+        }
 
+        // Post api/<UserController>/login
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> Login([FromBody] RequestLogin request)
+        {
+            //Authenticate User
+
+            try
+            {
+                string email = request.Email;
+                string password = request.Password;
+
+                User? user = await _context.Users.FirstOrDefaultAsync(user => user.Correo.Equals(email) );
+
+                if (user == null)
+                {
+                    return BadRequest(new OperationResult("Correo no existe", false));
+                };
+
+                bool passwordMatches = BC.Verify(password, user.Password);
+
+                if (!passwordMatches)
+                {
+                    return BadRequest(new OperationResult("Credenciales inválidas", false));
+                }
+
+
+                var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
+
+                var claims = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                    new Claim("email", user.Correo)
+                };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(
+                    jwt.Issuer,
+                    jwt.Audience,
+                    claims,
+                    expires: DateTime.Now.AddMinutes(60),
+                    signingCredentials: signIn
+                );
+
+                return Ok(new OperationResult("Login exitoso", true, new JwtSecurityTokenHandler().WriteToken(token)));
+            }
+            catch (Exception ex){
+                return BadRequest(new OperationResult(ex.Message.ToString(), false));
+            }
         }
 
         // POST api/<UserController>
         [HttpPost]
-        public void GetCurrentRole([FromBody] int id)
+        public ActionResult<User> GetCurrentRole([FromBody] int id)
         {
-            //TODO - get current role to validate some required operations in admin privileges
+            //get current role to validate some required operations in admin privileges
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var role = user.Role;
+
+            return Ok(role);
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult<User> EditUser(int id, [FromBody] User user)
         {
             //TODO Edit User
+
+            return Ok("ok");
         }
 
         // DELETE api/<UserController>/5

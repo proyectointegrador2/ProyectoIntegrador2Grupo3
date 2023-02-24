@@ -29,8 +29,8 @@ function Login() {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             const request = {
-                Correo: values.email,
-                Password: values.password,
+                email: values.email,
+                password: values.password,
             }
 
             fetch('api/user/login', {
