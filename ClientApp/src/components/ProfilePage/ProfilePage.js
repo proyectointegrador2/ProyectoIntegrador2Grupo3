@@ -36,7 +36,7 @@ function ProfilePage() {
         </FormGroup>
         <FormGroup>
             <Label for="examplePassword">
-                Usuario 
+                Nombre de Usuario 
             </Label>
             <Input
                 id="examplePassword"
