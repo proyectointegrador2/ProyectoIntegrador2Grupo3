@@ -29,7 +29,13 @@ const AppRoutes = [
   {
     path: '/register',
     element: <Register />
-  }
+    },
+
+  {
+      path: '/register',
+      element:<EditUser />
+
+    }
 ];
 
 export default AppRoutes;
