@@ -6,7 +6,7 @@ import { useAuthentication } from './Context/AuthenticationContext';
 
 function NavMenu () {
   const [collapsed, setCollapsed] = useState(true)
-  const { isLoggedIn, handleLogout, checkAuth } = useAuthentication()
+  const { isLoggedIn, role, handleLogout } = useAuthentication()
 
   const toggleNavbar = () => {
     setCollapsed(!collapsed)
@@ -32,8 +32,11 @@ function NavMenu () {
               {
                 !isLoggedIn ? 
                 <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>:
-                <NavLink className="text-dark pointer" onClick={handleLogout}>Logout</NavLink>
+                <NavLink className="text-dark pointer" onClick={handleLogout}>Cerrar Sesión</NavLink>
               }
+            </NavItem>
+            <NavItem>
+              {isLoggedIn && role === "admin" && <NavLink tag={Link} className="text-dark" to="/dashboard"><span className='text-success fw-bold'>Ir al Dashboard</span></NavLink>}
             </NavItem>
           </ul>
         </Collapse>
