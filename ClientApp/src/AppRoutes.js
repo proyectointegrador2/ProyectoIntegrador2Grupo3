@@ -5,6 +5,8 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import AddProduct from "./components/DesignAddCar/AddProduct"
 import ProfilePage from "./components/ProfilePage/ProfilePage";
+import ProductDetails from "./components/ProductDetails/ProductDetails";
+
 
 const AppRoutes = [
   {
@@ -31,10 +33,13 @@ const AppRoutes = [
     path: '/register',
     element: <Register />
     },
-  {
-        path: '/ProfilePage',
-        element: <ProfilePage />
+  {  path: '/ProfilePage',
+     element: <ProfilePage />
 
+  },
+  {
+      path: '/ProductDetails',
+      element: <ProductDetails/>
   }
 ];
 
