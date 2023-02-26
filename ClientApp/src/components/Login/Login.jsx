@@ -3,11 +3,14 @@ import { Card, Col, Form, Row, Input, InputGroupText, Button, FormFeedback } fro
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FieldGroup from '../Form/FieldGroup' 
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import {useAlert} from '../Context/AlertContext'
 import './login.css'
+import { useAuthentication } from '../Context/AuthenticationContext'
+
 
 const validationSchema = Yup.object({
     email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
@@ -15,6 +18,10 @@ const validationSchema = Yup.object({
 })
 
 function Login() {
+    const { showAlert } = useAlert();
+    const navigate = useNavigate();
+    const { checkAuth } = useAuthentication()
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -38,8 +45,23 @@ function Login() {
                 body: JSON.stringify(request),
                 headers: {'Content-Type': 'application/json'}
             })
-            .then(res => res.json())
-            .then(data => console.log(data))
+            .then(res => {
+                return res.json()
+            })
+            .then(data => {
+                if(data.success){
+                    const { token } = data
+                    if(token){
+                        localStorage.setItem("token", token)
+                        checkAuth()
+                        navigate("/")
+                    }else{
+                        throw Error("Token no existe!")
+                    } 
+                } else {
+                    showAlert("danger", data.message)
+                }
+            })
             .catch(err => console.error(err))
         }
     })
@@ -60,6 +82,7 @@ function Login() {
                                  value={formik.values.email}
                                  onChange={formik.handleChange}
                                  invalid={formik.touched.email && Boolean(formik.errors.email)}
+                                 autoComplete='on'
                                 />
                                 <InputGroupText>
                                     <FontAwesomeIcon icon={faEnvelope}/>

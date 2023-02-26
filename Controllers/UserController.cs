@@ -1,6 +1,6 @@
 ﻿using DB.Data.Entities;
 using DB.Data.Requests;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +10,7 @@ using SistemaDeInventarioDeVentaDeVehiculos.Utils;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BC = BCrypt.Net.BCrypt;
+using BC = BCrypt.Net.BCrypt;   
 
 namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 {
@@ -89,7 +89,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 if (user == null)
                 {
-                    return BadRequest(new OperationResult("Correo no existe", false));
+                    return BadRequest(new { message = "Correo no existe", success = false });
                 };
 
                 bool passwordMatches = BC.Verify(password, user.Password);
@@ -121,7 +121,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                     signingCredentials: signIn
                 );
 
-                return Ok(new OperationResult("Login exitoso", true, new JwtSecurityTokenHandler().WriteToken(token)));
+                return Ok(new {message = "Login exitoso", success = true, token = new JwtSecurityTokenHandler().WriteToken(token)});
             }
             catch (Exception ex){
                 return BadRequest(new OperationResult(ex.Message.ToString(), false));
@@ -144,6 +144,33 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             var role = user.Role;
 
             return Ok(role);
+        }
+
+        [HttpGet("verify-token")]
+        public IActionResult VerifySession()
+        {
+            try {
+                var authheader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                string? token = authheader?.Split(' ').Last();
+                if(token == "Bearer")
+                {
+                    return BadRequest(new { message = "token invalido" });
+                }
+
+                Jwt jwt = new Jwt();
+#pragma warning disable CS8604 // Possible null reference argument.
+                bool isExpired = jwt.IsTokenExpired(token);
+
+                if (!isExpired)
+                {
+                    return Ok(new OperationResult("Token válido", success: true));
+                }
+                return BadRequest(new { message = "token invalido" });
+            }catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            
         }
 
         // PUT api/<UserController>/5

@@ -11,7 +11,7 @@ namespace DB.Data.Entities
         public string Message { get; set; }
         public bool Success { get; set; }
 
-        public string Result { get; set; }
+        public string? Result { get; set; }
 
         public OperationResult(string message)
         {
