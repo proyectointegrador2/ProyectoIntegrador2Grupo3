@@ -6,11 +6,12 @@ export const useAuthentication = () => useContext(AuthenticationContext)
 
 export const AuthenticationProvider = ({children}) => {
     const [isLoggedIn, setIsLoggedIn] = useState(null)
+    const [role, setRole] = useState(null)
 
     const checkAuth = async () => {
+        let error = false;
         try{
             const token = localStorage.getItem("token")
-
             if(token){
                 const response = await fetch("api/user/verify-token", {
                     headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`},
@@ -20,19 +21,25 @@ export const AuthenticationProvider = ({children}) => {
                     const data = await response.json()
                     if(data.success) {
                         setIsLoggedIn(true)
+                        setRole(data.dataSession.role)
                     }else{
-                        setIsLoggedIn(false)    
+                        error = true  
                     }
                 }
                 else{
-                    setIsLoggedIn(false)
+                    error = true
                 }
             }else{
-                setIsLoggedIn(false)
+                error = true
             }
 
-        } catch(error){
+        } catch(err){
+            error = true
+        }
+
+        if(error){
             setIsLoggedIn(false)
+            setRole(null)
         }
     }
 
@@ -43,10 +50,11 @@ export const AuthenticationProvider = ({children}) => {
     const handleLogout = () => {
         localStorage.removeItem("token")
         setIsLoggedIn(false)
+        setRole(null)
     }
 
     return (
-        <AuthenticationContext.Provider value={{checkAuth, handleLogout, isLoggedIn}}>
+        <AuthenticationContext.Provider value={{checkAuth, handleLogout, isLoggedIn, role}}>
             {children}
         </AuthenticationContext.Provider>
     )

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Card, Col, Form, Row, Input, InputGroupText, Button, FormFeedback } from 'reactstrap'
+import React, { useState } from 'react'
+import { Card, Col, Form, Row, Input, InputGroupText, Button, FormFeedback, Spinner } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
@@ -11,16 +11,17 @@ import {useAlert} from '../Context/AlertContext'
 import './login.css'
 import { useAuthentication } from '../Context/AuthenticationContext'
 
-
 const validationSchema = Yup.object({
     email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
     password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
 })
 
 function Login() {
+    const [loading, setLoading] = useState(false)
     const { showAlert } = useAlert();
     const navigate = useNavigate();
     const { checkAuth } = useAuthentication()
+    
 
     const formik = useFormik({
         initialValues: {
@@ -35,6 +36,7 @@ function Login() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
+            setLoading(true)
             const request = {
                 email: values.email,
                 password: values.password,
@@ -51,6 +53,7 @@ function Login() {
             .then(data => {
                 if(data.success){
                     const { token } = data
+
                     if(token){
                         localStorage.setItem("token", token)
                         checkAuth()
@@ -63,6 +66,8 @@ function Login() {
                 }
             })
             .catch(err => console.error(err))
+
+            setLoading(false)
         }
     })
   return (
@@ -116,7 +121,17 @@ function Login() {
                                     </FormFeedback>
                                 }
                             </FieldGroup>
-                            <Button type='submit' size='lg' color='primary' block className='submit-button m-auto'>Entrar</Button>
+                            {!loading ?
+                                <Button type='submit' size='lg' color='primary' block className='submit-button m-auto'>Entrar</Button> :
+                                <Button type='submit' size='lg' color='primary' block className='submit-button m-auto' disabled>
+                                    <Spinner size="sm">
+                                        Loading...
+                                    </Spinner>
+                                    <span>
+                                        {' '}Entrar
+                                    </span>
+                                </Button>
+                            }
                         </Form>
                         <span className='text-muted text-center mt-4'>no tienes una cuenta? <Link to={'/register'}>Registrate!</Link></span>
                     </Card>

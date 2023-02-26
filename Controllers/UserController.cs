@@ -1,6 +1,5 @@
 ﻿using DB.Data.Entities;
 using DB.Data.Requests;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -102,15 +101,20 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("email", user.Correo)
+                    new Claim("email", user.Correo),
+                    new Claim("role", user.Role)
                 };
+#pragma warning restore CS8604 // Possible null reference argument.
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
+
                 var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var token = new JwtSecurityToken(
@@ -128,24 +132,6 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             }
         }
 
-        // POST api/<UserController>
-        [HttpPost]
-        public ActionResult<User> GetCurrentRole([FromBody] int id)
-        {
-            //get current role to validate some required operations in admin privileges
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-
-            if(user == null)
-            {
-                return NotFound();
-            }
-
-            var role = user.Role;
-
-            return Ok(role);
-        }
-
         [HttpGet("verify-token")]
         public IActionResult VerifySession()
         {
@@ -157,20 +143,19 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                     return BadRequest(new { message = "token invalido" });
                 }
 
-                Jwt jwt = new Jwt();
 #pragma warning disable CS8604 // Possible null reference argument.
-                bool isExpired = jwt.IsTokenExpired(token);
+                bool isExpired = Jwt.IsTokenExpired(token);
 
                 if (!isExpired)
                 {
-                    return Ok(new OperationResult("Token válido", success: true));
+                    UserData dataSession = Jwt.GetUserData(token);
+                    return Ok(new { message = "Token válido", success = true, dataSession });
                 }
                 return BadRequest(new { message = "token invalido" });
             }catch (Exception ex)
             {
                 return BadRequest(ex);
             }
-            
         }
 
         // PUT api/<UserController>/5
