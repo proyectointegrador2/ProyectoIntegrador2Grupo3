@@ -5,6 +5,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import AddProduct from "./components/DesignAddCar/AddProduct"
 import ProfilePage from "./components/ProfilePage/ProfilePage";
+import PublicRoute from "./routes/PublicRoute";
 
 const AppRoutes = [
   {
@@ -24,17 +25,22 @@ const AppRoutes = [
       element: <AddProduct />
   },
   {
-    path: '/login',
-    element: <Login />
+    path: "/login",
+    element: 
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
   },
   {
-    path: '/register',
-    element: <Register />
-    },
+    path: "/register",
+    element: 
+      <PublicRoute>
+            <Register />
+      </PublicRoute>
+  },
   {
-        path: '/ProfilePage',
-        element: <ProfilePage />
-
+    path: '/ProfilePage',
+    element: <ProfilePage />
   }
 ];
 
