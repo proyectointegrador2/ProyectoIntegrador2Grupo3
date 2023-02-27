@@ -22,11 +22,10 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Context
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Model> Models { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
-
-
+        {
             modelBuilder.Entity<User>()
                 .ToTable("User")
                 .Property(p => p.Password)
@@ -37,7 +36,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Context
             modelBuilder.Entity<Brand>().ToTable("Brand");
             modelBuilder.Entity<Model>().ToTable("Model");
             modelBuilder.Entity<Car>().ToTable("Car");
-
+            modelBuilder.Entity<Client>().ToTable("Client");
         }
     }
 }
