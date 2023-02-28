@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import { useAuthentication } from './Context/AuthenticationContext';
+import AdminDropdownBar from './Header/AdminDropdownBar';
 
 function NavMenu () {
   const [collapsed, setCollapsed] = useState(true)
@@ -14,9 +15,10 @@ function NavMenu () {
 
   return (
     <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
+        {isLoggedIn && role === "admin" &&<AdminDropdownBar />}
         <NavbarBrand tag={Link} to="/">SistemaDeInventarioDeVentaDeVehiculos</NavbarBrand>
-        <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+        <NavbarToggler onClick={toggleNavbar} className="me-2" />
         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={collapsed} navbar>
           <ul className="navbar-nav flex-grow">
             <NavItem>

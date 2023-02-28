@@ -167,7 +167,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                         await _context.SaveChangesAsync();
                         return Ok(new OperationResult("Cliente modificado correctamente!", true));
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         return StatusCode(500);
                     }

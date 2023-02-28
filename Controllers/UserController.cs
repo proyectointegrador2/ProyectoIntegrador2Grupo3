@@ -18,7 +18,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     public class UserController : ControllerBase
     {
         private readonly CarDbContext _context;
-        IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public UserController(CarDbContext context, IConfiguration configuration)
         {
