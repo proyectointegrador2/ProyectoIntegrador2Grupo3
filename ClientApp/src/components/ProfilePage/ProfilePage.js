@@ -7,6 +7,7 @@ import
     Label,
     Input,
     FormText,
+    Button,
    
 
 
@@ -89,12 +90,10 @@ function ProfilePage() {
                
             </Input>
         </FormGroup>
-        <FormGroup check>
-            <Input type="checkbox" />
-            <Label check>
-                Confirmar
-            </Label>
-        </FormGroup>
+        
+        <Button type="submit">
+            Crear Perfil
+        </Button>
     </Form>)
 }
 
