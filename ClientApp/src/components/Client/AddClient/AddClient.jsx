@@ -1,18 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Card, CardBody, CardTitle, Col, Form, FormFeedback, FormGroup, Input, Label, Row, Spinner } from 'reactstrap'
-import * as Yup from 'yup'
+import { clientSchema } from '../../../helpers/formsSchema'
 import { useFormik } from 'formik'
 import { useAlert } from '../../Context/AlertContext'
-
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
-const validationSchema = Yup.object({
-    name: Yup.string("Ingresa un nombre").min(3, "El campo nombre debería de tener al menos 3 carácteres").required("Este campo es requerido"),
-    lastName: Yup.string("Ingresa un apellido").min(3, "El campo Apellido debería de tener al menos 3 carácteres").required("Este campo es requerido"),
-    email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
-    address: Yup.string("Ingrese una dirección").min(8, "El campo de direccion requiere de al menos 8 carácteres").max(100, "Valor ingresado muy largo. Ingrese un valor de al menos a 100 carácteres").required("Este campo es requerido"),
-    phone: Yup.string().matches(phoneRegExp, "Formato de número de teléfono no válido").required("Este campo es requerido")
-})
 
 function AddClient() {
     const [loading, setLoading] = useState(false)
@@ -26,7 +16,7 @@ function AddClient() {
             address: '',
             phone: ''
         },
-        validationSchema,
+        validationSchema: clientSchema,
         onSubmit: (values) => {
             setLoading(true)
 
@@ -46,20 +36,18 @@ function AddClient() {
                     headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`},
                     body: JSON.stringify(request)
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data)
-                        if(data.success){
-                            showAlert("success", data.message)    
-                        }else{
-                            showAlert("danger", data.message)
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err)
-                        showAlert("danger", err.message)
-                    })
-                    .finally(() => setLoading(false))
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success){
+                        showAlert("success", data.message)    
+                    }else{
+                        showAlert("danger", data.message)
+                    }
+                })
+                .catch(err => {
+                    showAlert("danger", err.message)
+                })
+                .finally(() => setLoading(false))
             }else{
                 showAlert("danger", "Su sesion ha expirado, por favor inicie sesión!")
             }
@@ -99,7 +87,7 @@ function AddClient() {
                                             <Label for='lastName'>Apellido</Label>
                                             <Input id='lastName'
                                              name='lastName'
-                                             placeholder='Joe'
+                                             placeholder='Dan'
                                              defaultValue={formik.values.lastName}
                                              invalid={formik.touched.lastName && Boolean(formik.errors.lastName)}
                                              onChange={formik.handleChange}
