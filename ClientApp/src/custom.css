@@ -30,3 +30,7 @@ code {
   justify-content: center;
   align-items: center;
 }
+
+.left-side-dropdown-bar .sidebar-item{
+  padding: 1rem 1.25rem;
+}
