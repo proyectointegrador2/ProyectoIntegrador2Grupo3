@@ -66,8 +66,7 @@ function Login() {
                 }
             })
             .catch(err => console.error(err))
-
-            setLoading(false)
+            .finally(() => setLoading(false))
         }
     })
   return (

@@ -20,11 +20,11 @@ namespace DB.Data.Entities
 
         [MinLength(8)]
         [MaxLength(100)]
-        public string? Direccion { get; set; }
+        public string Direccion { get; set; }
 
         [MaxLength(20)]
         [DataType(DataType.PhoneNumber)]
-        public string? Telefono { get; set; }
+        public string Telefono { get; set; }
 
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
