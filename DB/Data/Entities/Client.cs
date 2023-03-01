@@ -29,5 +29,7 @@ namespace DB.Data.Entities
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         public string Correo { get; set; }
+
+        public IEnumerable<Sale> Sales { get; set; }
     }
 }
