@@ -1,4 +1,5 @@
-﻿using SistemaDeInventarioDeVentaDeVehiculos.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaDeInventarioDeVentaDeVehiculos.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,7 +39,8 @@ namespace DB.Data.Entities
         public byte CantidadPuerta { get; set; }
         [Required]
 
-        public float Precio { get; set; }
+        [Precision(10, 2)]
+        public decimal Precio { get; set; }
         [Required]
         public int Stock { get; set; }
         [Required]
@@ -46,9 +48,12 @@ namespace DB.Data.Entities
         [Required]
         public string Combustible { get; set; } 
 
+        public string Descripcion { get; set; }
+
         public int ModelID { get; set; }
         [ForeignKey("ModelID")]
         public virtual Model Model { get; set; }
 
+        public IEnumerable<SaleDetails> SaleDetails { get; set; }
     }
 }
