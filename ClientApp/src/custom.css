@@ -19,3 +19,18 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.pointer{
+  cursor: pointer;
+}
+
+.loading{
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-side-dropdown-bar .sidebar-item{
+  padding: 1rem 1.25rem;
+}

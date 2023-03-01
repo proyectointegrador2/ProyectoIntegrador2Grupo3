@@ -36,6 +36,8 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Entities
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [MinLength(8)]
+        [MaxLength(100)]
         public string? Direccion { get; set; }
 
         [MaxLength(20)]
