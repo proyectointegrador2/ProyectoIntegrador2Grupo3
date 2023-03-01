@@ -5,21 +5,78 @@ FormGroup,
 Label,
 Input,
 Button,
-
-
-
+FormFeedback,
 } from 'reactstrap';
 
+import { userProfileSchema } from "../../helpers/formsSchema"
+import { useFormik } from'formik'
+
 function EditUser() {
-    return (<Form>
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+            name: '',
+            lastName: '',
+            email: '',
+            address: '',
+            phone: ''
+        },
+        validationSchema: userProfileSchema,
+        onSubmit: (values) => {
+            console.log(values)
+        }
+    })
+
+    return (<Form onSubmit={formik.handleSubmit}>
+
         <FormGroup>
             <Label for="exampleEmail">
                 Editor de Usario
             </Label>
             <Input
                 plaintext
-                value="Nombre de Perfil"
+                defaultValue="Nombre de Perfil"
             />
+        </FormGroup>
+        <FormGroup>
+            <Label for="exampleNombre">
+                Nombre
+            </Label>
+            <Input
+                id="exampleNombre"
+                name="Nombre"
+                defaultValue={formik.values.name}
+                invalid={formik.touched.name && Boolean(formik.errors.name)}
+                onChange={formik.handleChange}
+                
+            />
+            {
+                Boolean(formik.errors.name) && formik.touched.name &&
+                <FormFeedback>
+                    {formik.errors.name}
+                </FormFeedback>
+            }
+        </FormGroup>
+        <FormGroup>
+            <Label for="exampleApellido">
+                Apellido
+            </Label>
+            <Input
+                id="exampleApellido"
+                name="Apellido"
+                defaultValue={formik.values.lastName}
+                invalid={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                onChange={formik.handleChange}
+
+                
+            />
+            {
+                Boolean(formik.errors.lastName) && formik.touched.lastName &&
+                <FormFeedback>
+                    {formik.errors.lastName}
+                </FormFeedback>
+            }
         </FormGroup>
         <FormGroup>
             <Label for="exampleEmail">
@@ -48,21 +105,21 @@ function EditUser() {
                 Nombre de Usuario
             </Label>
             <Input
-                id="examplePassword"
-                name="password"
+                id="exampleNombre de Usuario"
+                name="Nombre de Usuario"
 
-                type="password"
+                type="Nombre de Usuario"
             />
         </FormGroup>
         <FormGroup>
-            <Label for="exampleUrl">
+            <Label for="exampleContrasena">
                 Contraseña
             </Label>
             <Input
-                id="exampleUrl"
-                name="url"
+                id="exampleContrasena"
+                name="Contrasena"
 
-                type="url"
+                type="password"
             />
         </FormGroup>
         <FormGroup>
@@ -71,19 +128,19 @@ function EditUser() {
             </Label>
             <Input
                 id="exampleNumber"
-                name="number"
+                name="phone"
 
-                type="number"
+                
             />
         </FormGroup>
 
         <FormGroup>
-            <Label for="exampleSelect">
+            <Label for="exampleSexo">
                 Sexo
             </Label>
             <Input
-                id="exampleSelect"
-                name="select"
+                id="exampleSexo"
+                name="Sexo"
                 type="select"
             >
                 <option>
@@ -99,12 +156,12 @@ function EditUser() {
             </Input>
         </FormGroup>
         <FormGroup>
-            <Label for="exampleSelect">
+            <Label for="exampleRoldeUsuario">
                 Rol de usuario
             </Label>
             <Input
                 id="exampleSelect"
-                name="select"
+                name="Rol de usuario"
                 type="select"
             >
                 <option>

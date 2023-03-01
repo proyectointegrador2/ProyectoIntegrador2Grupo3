@@ -59,14 +59,15 @@ const AppRoutes = [
       <AdminRoute>
         <AddClient/>
       </AdminRoute>
-  }
-    path: '/register',
-    element: <Register />
-    },
+  },
+   
 
   {
       path: '/EditUser',
-      element:<EditUser />
+      element:                  
+      <PrivateRoute>    
+        <EditUser /> 
+      </PrivateRoute> 
 
     },
 ];
