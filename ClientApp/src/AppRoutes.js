@@ -11,6 +11,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import AdminRoute from "./routes/AdminRoute";
 import AddClient from "./components/Client/AddClient/AddClient";
 import ClientList from "./components/Client/ClientList/ClientList";
+import EditClient from "./components/Client/EditClient/EditClient";
 
 const AppRoutes = [
   {
@@ -67,7 +68,14 @@ const AppRoutes = [
       <AdminRoute>
         <ClientList/>
       </AdminRoute>
-  }
+  },
+  {
+    path: "/dashboard/Edit-Client/:id",
+    element: 
+      <AdminRoute>
+        <EditClient />
+      </AdminRoute>
+  },
 ];
 
 export default AppRoutes;

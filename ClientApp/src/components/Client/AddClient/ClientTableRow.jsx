@@ -17,7 +17,7 @@ function ClientTableRow({id, name, lastName, email, address, phone}) {
                 <DropdownToggle caret outline color='primary'>Acción</DropdownToggle>
                 <DropdownMenu>
                     <DropdownItem>
-                        <Link to={`dashboard/Edit-Client/${id}`} className='me-1 text-black text-decoration-none'>
+                        <Link to={`/dashboard/Edit-Client/${id}`} replace className='me-1 text-black text-decoration-none'>
                             <FontAwesomeIcon icon={faPenToSquare} color='#0d6efd' />
                             <span className='ms-1'>Editar</span>
                         </Link>
