@@ -14,13 +14,13 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Entities
         public User(string role)
         {
 
-            if(role == "usuario" || role == "admin")
+            if(role == "cliente" || role == "admin")
             {
                 Role = role;
             }
             else
             {
-                Role = "usuario";
+                Role = "cliente";
             }
         }
 

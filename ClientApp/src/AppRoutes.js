@@ -11,6 +11,8 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import AdminRoute from "./routes/AdminRoute";
 import AddClient from "./components/Client/AddClient/AddClient";
 import EditUser from "./components/EditUser/EditUser"
+import ClientList from "./components/Client/ClientList/ClientList";
+import EditClient from "./components/Client/EditClient/EditClient";
 
 const AppRoutes = [
   {
@@ -53,23 +55,35 @@ const AppRoutes = [
         <AdminRoute>
           <Dashboard/>
         </AdminRoute>
-  },{
+  },
+  {
     path: "/dashboard/New-Client",
     element:
       <AdminRoute>
         <AddClient/>
       </AdminRoute>
   },
-   
-
   {
       path: '/EditUser',
       element:                  
       <PrivateRoute>    
         <EditUser /> 
       </PrivateRoute> 
-
-    },
+  },
+  {
+    path: "/dashboard/Client-List",
+    element: 
+      <AdminRoute>
+        <ClientList/>
+      </AdminRoute>
+  },
+  {
+    path: "/dashboard/Edit-Client/:id",
+    element: 
+      <AdminRoute>
+        <EditClient />
+      </AdminRoute>
+  },
 ];
 
 export default AppRoutes;

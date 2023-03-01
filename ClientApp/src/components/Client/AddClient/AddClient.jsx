@@ -39,7 +39,7 @@ function AddClient() {
                 .then(res => res.json())
                 .then(data => {
                     if(data.success){
-                        showAlert("success", data.message)    
+                        showAlert("success", data.message)
                     }else{
                         showAlert("danger", data.message)
                     }

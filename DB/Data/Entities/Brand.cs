@@ -16,5 +16,7 @@ namespace DB.Data.Entities
         [MinLength(3)]
         [MaxLength(15)]
         public string Nombre { get; set; }
+
+        public ICollection<Model> Models { get; set; }
     }
 }
