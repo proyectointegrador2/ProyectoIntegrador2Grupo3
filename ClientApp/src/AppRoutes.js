@@ -10,6 +10,7 @@ import PrivateRoute from './routes/PrivateRoute'
 import Dashboard from "./components/Dashboard/Dashboard";
 import AdminRoute from "./routes/AdminRoute";
 import AddClient from "./components/Client/AddClient/AddClient";
+import EditUser from "./components/EditUser/EditUser"
 import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 
@@ -61,6 +62,13 @@ const AppRoutes = [
       <AdminRoute>
         <AddClient/>
       </AdminRoute>
+  },
+  {
+      path: '/EditUser',
+      element:                  
+      <PrivateRoute>    
+        <EditUser /> 
+      </PrivateRoute> 
   },
   {
     path: "/dashboard/Client-List",

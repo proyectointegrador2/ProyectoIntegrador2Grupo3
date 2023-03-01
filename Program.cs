@@ -44,7 +44,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CarDbContext>();
-    context.Database.Migrate();
+     context.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.

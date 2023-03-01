@@ -38,3 +38,14 @@ export const carSchema = Yup.object({
     transmition: Yup.string().oneOf(["Automático", "Manual"], "Valor invalido").required("Este campo es requerido"),
     fuel: Yup.string().oneOf(["Gasolina", "Gas", "Eléctrico"], "Valor invalido").required("Este campo es requerido")
 })
+
+export const userProfileSchema = Yup.object({
+    name: Yup.string("Ingresa un nombre").min(3, "El campo nombre debería de tener al menos 3 carácteres").required("Este campo es requerido"),
+    lastName: Yup.string("Ingresa un apellido").min(3, "El campo Apellido debería de tener al menos 3 carácteres").required("Este campo es requerido"),
+    username: Yup.string().min(5, "El campo Usuario debe de tener al menos 5 carácteres").required("Este campo es requerido"),
+    email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
+    password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
+    phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
+    address: Yup.string().optional()
+    
+})
