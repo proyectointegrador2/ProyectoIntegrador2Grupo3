@@ -10,6 +10,7 @@ import PrivateRoute from './routes/PrivateRoute'
 import Dashboard from "./components/Dashboard/Dashboard";
 import AdminRoute from "./routes/AdminRoute";
 import AddClient from "./components/Client/AddClient/AddClient";
+import ClientList from "./components/Client/ClientList/ClientList";
 
 const AppRoutes = [
   {
@@ -52,11 +53,19 @@ const AppRoutes = [
         <AdminRoute>
           <Dashboard/>
         </AdminRoute>
-  },{
+  },
+  {
     path: "/dashboard/New-Client",
     element:
       <AdminRoute>
         <AddClient/>
+      </AdminRoute>
+  },
+  {
+    path: "/dashboard/Client-List",
+    element: 
+      <AdminRoute>
+        <ClientList/>
       </AdminRoute>
   }
 ];

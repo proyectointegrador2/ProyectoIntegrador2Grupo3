@@ -60,7 +60,7 @@ function CollapseNavItems({dropdownToggle}) {
                 },
                 {
                     path: "/dashboard/Client-List",
-                    text: "Lista de Clietes",
+                    text: "Lista de Clientes",
                 }
             ]
         },
