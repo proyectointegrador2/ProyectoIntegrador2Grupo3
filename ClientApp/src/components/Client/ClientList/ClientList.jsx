@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardTitle, Input, InputGroup, InputGroupText, Table } from 'reactstrap'
 import { useAlert } from '../../Context/AlertContext'
-import ClientTableRow from '../AddClient/ClientTableRow'
+import ClientTableRow from './ClientTableRow'
 import { Loading } from '../../Loading/Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import { getClients } from '../../../helpers/clientHelpers'
 
 function ClientList() {
     const [data, setData] = useState()
@@ -13,22 +14,16 @@ function ClientList() {
     const { showAlert } = useAlert()
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
-
-        fetch('api/client', {
-            method: "GET",
-            headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`}
-        })
-        .then(res => res.json())
-        .then(data => {
-            setData(data)
-        })
-        .catch(err => {
-            console.log(err)
-            showAlert("danger", err.message)
-        })
-        .finally(() => setLoading(false))
-    },[])
+        getClients()
+            .then(data => {
+                setData(data)
+            })
+            .catch(err => {
+                console.log(err)
+                showAlert("danger", err.message)
+            })
+            .finally(() => setLoading(false))
+    },[showAlert])
 
     if(loading){
         return <Loading/>
@@ -49,8 +44,7 @@ function ClientList() {
                             </InputGroupText>
                             <Input type='search' className='border-start-0' placeholder="Buscar Nombre, Correo, ID..." />
                         </InputGroup>
-                        
-                        <Table responsive hover className='bg-white border'>
+                        <Table hover className='bg-white border'>
                             <thead>
                                 <tr>
                                     <th>#</th>

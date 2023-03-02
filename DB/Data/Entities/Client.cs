@@ -30,6 +30,6 @@ namespace DB.Data.Entities
         [DataType(DataType.EmailAddress)]
         public string Correo { get; set; }
 
-        public IEnumerable<Sale> Sales { get; set; }
+        public IEnumerable<Sale>? Sales { get; set; }
     }
 }
