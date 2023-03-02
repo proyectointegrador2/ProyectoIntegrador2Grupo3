@@ -1,13 +1,12 @@
-﻿import React, { useState } from 'react';
-import {
-    Alert,
-} from 'reactstrap';
+﻿import React  from 'react';
+
+import "./PagenotFound.css"
 
 function PagenotFound() {
-    return (
-        <Alert color="secondary">
-    Page not found 404.
-</Alert>)
+    return ( <div className="not-found">
+        <h1>Page Not Found 404</h1>
+        </div>)
+      
 
 }
 
