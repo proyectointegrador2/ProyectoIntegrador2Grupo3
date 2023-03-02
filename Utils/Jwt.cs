@@ -15,7 +15,10 @@ public class Jwt
         if(string.IsNullOrWhiteSpace(token)) return true;
 
         var jwtTokenHandle = new JwtSecurityTokenHandler();
+
+        //if (!jwtTokenHandle.CanReadToken(token)) return true;
         var jwtToken = jwtTokenHandle.ReadJwtToken(token);
+        
         var exp = jwtToken.Payload.Exp;
 
         var secondsSinceEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DB.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
+using SistemaDeInventarioDeVentaDeVehiculos.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,20 +23,52 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success) return BadRequest(tokenValidation);
+
             var cars = await _context.Cars.ToListAsync();
 
-            return Ok(cars);
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                return Ok(cars);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET api/<CarController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCarByIdAsync(int id)
         {
-            //TODO add role validation and error code 
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-            var car = await _context.Cars.FindAsync(id);
+            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
-            return Ok(car);
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                bool carExist = _context.Cars.Any(c => c.Id == id);
+
+                if (carExist)
+                {
+                    var car = await _context.Cars.FindAsync(id);
+
+                    if (car == null) return NotFound();
+
+                    return Ok(new { success = true, car });
+                }
+
+                else return NotFound();
+            }
+
+            return StatusCode(403);
         }
 
         public async Task<IActionResult> GetCarsByBrandIdAsync(int id)

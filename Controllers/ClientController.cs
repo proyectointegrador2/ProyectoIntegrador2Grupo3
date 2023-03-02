@@ -215,24 +215,5 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             return StatusCode(403);
         }
-
-        public object VerifyToken(string authHeader)
-        {
-            string? token = authHeader?.Split(' ').Last();
-            if (token == "Bearer")
-            {
-                return new { message = "token invalido", success = false };
-            }
-
-#pragma warning disable CS8604 // Possible null reference argument.
-            bool isExpired = Jwt.IsTokenExpired(token);
-
-            if (!isExpired)
-            {
-                UserData dataSession = Jwt.GetUserData(token);
-                return new { message = "Token válido", success = true, dataSession };
-            }
-            return new { message = "token invalido", success = false };
-        }
     }
 }
