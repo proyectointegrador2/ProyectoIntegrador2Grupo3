@@ -1,5 +1,5 @@
-﻿import React  from 'react';
-
+﻿import React from 'react';
+import image from "./image.jpg"
 import "./PagenotFound.css"
 
 function PagenotFound() {
