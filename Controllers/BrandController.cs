@@ -110,5 +110,92 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             return StatusCode(403);
         }
+
+
+        // PUT api/<BrandController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditBrand(int id, [FromBody] Brand brand)
+        {
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (httpHeader == null)
+            {
+                return BadRequest(new OperationResult("No autorizado", false));
+            }
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success)
+            {
+                return BadRequest(tokenValidation);
+            }
+
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                if (brand == null)
+                {
+                    return BadRequest(new OperationResult("Datos enviados invalidos", false));
+                }
+
+                bool brandExist = _context.Brands.Any(c => c.Id == id);
+
+                if (brandExist)
+                {
+                    brand.Id = id;
+
+                    _context.Entry(brand).State = EntityState.Modified;
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        return Ok(new OperationResult("Marca modificada correctamente!", true));
+                    }
+                    catch (Exception)
+                    {
+                        return StatusCode(500);
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return StatusCode(403);
+        }
+
+        // DELETE api/<BrandController>/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (httpHeader == null)
+            {
+                return BadRequest(new OperationResult("No autorizado", false));
+            }
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success)
+            {
+                return BadRequest(tokenValidation);
+            }
+
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                var brand = await _context.Brands.FindAsync(id);
+
+                if (brand == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Brands.Remove(brand);
+                await _context.SaveChangesAsync();
+
+                return Ok(new OperationResult("Marca eliminada correctamente!", true));
+            }
+
+            return StatusCode(403);
+        }
     }
 }

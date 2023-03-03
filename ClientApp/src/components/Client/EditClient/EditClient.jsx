@@ -176,10 +176,10 @@ function EditClient() {
                                         <Button type='submit' size='lg' color='primary' disabled>
                                             <Spinner size="sm">Loading...</Spinner>
                                             <span>
-                                                {' '}Añadir
+                                                {' '}Editar
                                             </span>
                                         </Button>    :
-                                        <Button type='submit' size='lg' color='primary'>Añadir</Button>
+                                        <Button type='submit' size='lg' color='primary'>Editar</Button>
                                     }
                                 </Form>
                             )}
