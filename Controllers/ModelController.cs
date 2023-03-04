@@ -10,89 +10,70 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientController : ControllerBase
+    public class ModelController : ControllerBase
     {
         private readonly CarDbContext _context;
 
-        public ClientController(CarDbContext context)
+        public ModelController(CarDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/<ClientController>
+        // GET: api/<MarcaController>
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-
-            if (httpHeader == null)
-            {
-                return BadRequest(new OperationResult("No autorizado", false));
-            }
+            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success)
-            {
-                return BadRequest(tokenValidation);
-            }
+            if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+            var models = await _context.Models.ToListAsync();
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                var clients = await _context.Clients.ToListAsync();
-
-                return Ok(clients);
+                return Ok(models);
             }
             else
             {
                 return NotFound();
             }
-
         }
 
-        // GET api/<ClientController>/5
+        // GET api/<ModelController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClientByIdAsync(int id)
+        public async Task<IActionResult> GetModelByIdAsync(int id)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-            if (httpHeader == null)
-            {
-                return BadRequest(new OperationResult("No autorizado", false));
-            }
+            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success)
-            {
-                return BadRequest(tokenValidation);
-            }
+            if (!tokenValidation.success) return BadRequest(tokenValidation);
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                bool clientExist = _context.Clients.Any(c => c.Id == id);
+                bool modelExist = _context.Models.Any(c => c.Id == id);
 
-                if (clientExist)
+                if (modelExist)
                 {
-                    var client = await _context.Clients.FindAsync(id);
+                    var model = await _context.Models.FindAsync(id);
 
-                    if (client == null)
-                    {
-                        return NotFound();
-                    }
+                    if (model == null) return NotFound();
 
-                    return Ok(new {success = true, client });
+                    return Ok(new { success = true, model });
                 }
-                else
-                {
-                    return NotFound();
-                }
+
+                else return NotFound();
             }
 
             return StatusCode(403);
         }
 
-        // POST api/<ClientController> Create Client
+        // POST api/<ModelController> Create Model
         [HttpPost]
-        public async Task<IActionResult> CreateClient([FromBody] Client client)
+        public async Task<IActionResult> CreateModel([FromBody] Model model)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -109,30 +90,31 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                if (client == null)
+                if (model == null)
                 {
                     return BadRequest(new OperationResult("Datos enviados invalidos", false));
                 }
 
-                var emailIsRegistered = await _context.Clients.AnyAsync(u => u.Correo == client.Correo);
+                bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
+                var modelIsRegistered = await _context.Models.AnyAsync(m => m.Nombre == model.Nombre);
 
-                if (emailIsRegistered)
-                {
-                    return BadRequest(new OperationResult("Este Correo ya existe", false));
-                }
+                if (!brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+                
+                if (modelIsRegistered) return BadRequest(new OperationResult("El modelo ya existe", false));
 
-                _context.Clients.Add(client);
+                _context.Models.Add(model);
                 await _context.SaveChangesAsync();
 
-                return Ok(new OperationResult("Cliente agregado Correctamente!", true));
+                return Ok(new OperationResult("Modelo agregado Correctamente!", true));
             }
 
             return StatusCode(403);
         }
 
-        // PUT api/<ClientController>/5
+
+        // PUT api/<ModelController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditClient(int id, [FromBody] Client client)
+        public async Task<IActionResult> EditModel(int id, [FromBody] Model model)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -149,23 +131,26 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                if (client == null)
+                if (model == null)
                 {
                     return BadRequest(new OperationResult("Datos enviados invalidos", false));
                 }
 
-                bool clientExist = _context.Clients.Any(c => c.Id == id);
+                bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
+                bool modelExist = await _context.Models.AnyAsync(m => m.Id == id);
 
-                if (clientExist)
+                if (brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+
+                if (modelExist)
                 {
-                    client.Id = id;
+                    model.Id = id;
 
-                    _context.Entry(client).State = EntityState.Modified;
+                    _context.Entry(model).State = EntityState.Modified;
 
                     try
                     {
                         await _context.SaveChangesAsync();
-                        return Ok(new OperationResult("Cliente modificado correctamente!", true));
+                        return Ok(new OperationResult("Modelo modificado correctamente!", true));
                     }
                     catch (Exception)
                     {
@@ -181,7 +166,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             return StatusCode(403);
         }
 
-        // DELETE api/<ClientController>/5
+        // DELETE api/<ModelController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -193,24 +178,28 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             }
 
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success) 
+            if (!tokenValidation.success)
             {
                 return BadRequest(tokenValidation);
             }
 
-            if(tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                var client = await _context.Clients.FindAsync(id);
+                var model = await _context.Models.FindAsync(id);
 
-                if (client == null)
+                if (model == null)
                 {
                     return NotFound();
                 }
 
-                _context.Clients.Remove(client);
+                bool hasCar = await _context.Cars.AnyAsync(c => c.ModelID == id);
+
+                if (hasCar) return Unauthorized(new OperationResult("Operación no realizada por motivos de que existen carros asignados a este registro."));
+
+                _context.Models.Remove(model);
                 await _context.SaveChangesAsync();
 
-                return Ok(new OperationResult("Cliente eliminado correctamente!", true));
+                return Ok(new OperationResult("Modelo eliminado correctamente!", true));
             }
 
             return StatusCode(403);

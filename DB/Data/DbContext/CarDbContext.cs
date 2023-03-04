@@ -30,7 +30,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Context
         {
             modelBuilder.Entity<SaleDetails>().ToTable("SaleDetails");
             modelBuilder.Entity<Sale>().ToTable("Sale")
-                .HasMany(s => s.salesDetails)
+                .HasMany(s => s.SalesDetails)
                 .WithOne(sd => sd.Sale)
                 .HasForeignKey(sd => sd.SaleID)
                 .OnDelete(DeleteBehavior.Restrict);

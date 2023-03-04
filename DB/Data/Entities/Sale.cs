@@ -11,7 +11,9 @@ namespace DB.Data.Entities
 {
     public class Sale
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         protected Sale()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             Estatus = "A";
             FechaVenta = DateTime.Now;
@@ -30,8 +32,8 @@ namespace DB.Data.Entities
         public int ClientID { get; set; }
 
         [ForeignKey("ClientID")]
-        public virtual Client Client { get; set; }
+        public virtual Client? Client { get; set; }
 
-        public IEnumerable<SaleDetails> salesDetails { get; set; }
+        public IEnumerable<SaleDetails>? SalesDetails { get; set; }
     }
 }

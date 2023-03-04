@@ -11,7 +11,9 @@ namespace DB.Data.Entities
 {
     public class SaleDetails
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public SaleDetails()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             SubTotal = CantidadVendida * PrecioUnidad;
         }
@@ -21,11 +23,11 @@ namespace DB.Data.Entities
         public int ID { get; set; }
         public int SaleID { get; set; }
         [ForeignKey("SaleID")]
-        public virtual Sale Sale { get; set; }
+        public virtual Sale? Sale { get; set; }
 
         public int CarID { get; set; }
         [ForeignKey("CarID")]
-        public virtual Car Car { get; set; }
+        public virtual Car? Car { get; set; }
 
 
         public int CantidadVendida { get; set; }

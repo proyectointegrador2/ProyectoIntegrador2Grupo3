@@ -12,9 +12,11 @@ namespace DB.Data.Entities
 {
     public class Car : BaseEntity
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Car() {
 
         }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         [MinLength(3)]
         [MaxLength(30)]
@@ -28,20 +30,26 @@ namespace DB.Data.Entities
         [Required]
         public string Placa { get; set; }
         [Required]
-        public string Anio { get; set; }
+        [Range(1970, int.MaxValue)]
+        public int Anio { get; set; }
         [Required]
         public string Color { get; set; }
         [Required]
-        public string Cilindraje { get; set; }
+        [Precision(10,2)]
+        public decimal Cilindraje { get; set; }
         [Required]
+        [Range(0, int.MaxValue)]
         public int KilometrosTablero { get; set; }
         [Required]
+        [Range(2, byte.MaxValue)]
         public byte CantidadPuerta { get; set; }
         [Required]
 
         [Precision(10, 2)]
+        [Range(0, int.MaxValue)]
         public decimal Precio { get; set; }
         [Required]
+        [Range(0, int.MaxValue)]
         public int Stock { get; set; }
         [Required]
         public string Transmicion { get; set; }
@@ -52,8 +60,7 @@ namespace DB.Data.Entities
 
         public int ModelID { get; set; }
         [ForeignKey("ModelID")]
-        public virtual Model Model { get; set; }
-
-        public IEnumerable<SaleDetails> SaleDetails { get; set; }
+        public virtual Model? Model { get; set; }
+        public IEnumerable<SaleDetails>? SaleDetails { get; set; }
     }
 }

@@ -8,6 +8,8 @@ const context =  [
     "/weatherforecast",
     "/api/user",
     "/api/car",
+    "/api/brand",
+    "/api/model",
     "/api/client",
     "/api/sale"
 ];

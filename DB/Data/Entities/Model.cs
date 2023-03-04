@@ -11,7 +11,9 @@ namespace DB.Data.Entities
 {
     public class Model : BaseEntity
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Model() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         [Required]
         [MinLength(3)]
@@ -21,8 +23,8 @@ namespace DB.Data.Entities
         public int BrandID { get; set; }
 
         [ForeignKey("BrandID")]
-        public virtual Brand Brand { get; set; }
+        public virtual Brand? Brand { get; set; }
 
-        public ICollection<Car> Cars { get; set; }
+        public ICollection<Car>? Cars { get; set; }
     }
 }
