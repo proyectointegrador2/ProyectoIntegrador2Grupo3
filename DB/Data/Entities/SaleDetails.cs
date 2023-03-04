@@ -23,11 +23,11 @@ namespace DB.Data.Entities
         public int ID { get; set; }
         public int SaleID { get; set; }
         [ForeignKey("SaleID")]
-        public virtual Sale Sale { get; set; }
+        public virtual Sale? Sale { get; set; }
 
         public int CarID { get; set; }
         [ForeignKey("CarID")]
-        public virtual Car Car { get; set; }
+        public virtual Car? Car { get; set; }
 
 
         public int CantidadVendida { get; set; }

@@ -10,16 +10,16 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class ModelController : ControllerBase
     {
         private readonly CarDbContext _context;
 
-        public BrandController(CarDbContext context)
+        public ModelController(CarDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/<BrandController>
+        // GET: api/<MarcaController>
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
@@ -29,11 +29,11 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
             if (!tokenValidation.success) return BadRequest(tokenValidation);
 
-            var brands = await _context.Brands.ToListAsync();
+            var models = await _context.Models.ToListAsync();
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                return Ok(brands);
+                return Ok(models);
             }
             else
             {
@@ -41,9 +41,9 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             }
         }
 
-        // GET api/<BrandController>/5
+        // GET api/<ModelController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBrandByIdAsync(int id)
+        public async Task<IActionResult> GetModelByIdAsync(int id)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -54,15 +54,15 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                bool brandExist = _context.Brands.Any(c => c.Id == id);
+                bool modelExist = _context.Models.Any(c => c.Id == id);
 
-                if (brandExist)
+                if (modelExist)
                 {
-                    var brand = await _context.Brands.FindAsync(id);
+                    var model = await _context.Models.FindAsync(id);
 
-                    if (brand == null) return NotFound();
+                    if (model == null) return NotFound();
 
-                    return Ok(new { success = true, brand });
+                    return Ok(new { success = true, model });
                 }
 
                 else return NotFound();
@@ -71,9 +71,9 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             return StatusCode(403);
         }
 
-        // POST api/<BrandController> Create Brand
+        // POST api/<ModelController> Create Model
         [HttpPost]
-        public async Task<IActionResult> CreateBrand([FromBody] Brand brand)
+        public async Task<IActionResult> CreateModel([FromBody] Model model)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -90,31 +90,31 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                if (brand == null)
+                if (model == null)
                 {
                     return BadRequest(new OperationResult("Datos enviados invalidos", false));
                 }
 
-                var brandIsRegistered = await _context.Brands.AnyAsync(u => u.Nombre == brand.Nombre);
+                bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
+                var modelIsRegistered = await _context.Models.AnyAsync(m => m.Nombre == model.Nombre);
 
-                if (brandIsRegistered)
-                {
-                    return BadRequest(new OperationResult("La marca ya existe", false));
-                }
+                if (!brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+                
+                if (modelIsRegistered) return BadRequest(new OperationResult("El modelo ya existe", false));
 
-                _context.Brands.Add(brand);
+                _context.Models.Add(model);
                 await _context.SaveChangesAsync();
 
-                return Ok(new OperationResult("Marca agregada Correctamente!", true));
+                return Ok(new OperationResult("Modelo agregado Correctamente!", true));
             }
 
             return StatusCode(403);
         }
 
 
-        // PUT api/<BrandController>/5
+        // PUT api/<ModelController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditBrand(int id, [FromBody] Brand brand)
+        public async Task<IActionResult> EditModel(int id, [FromBody] Model model)
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -131,23 +131,26 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                if (brand == null)
+                if (model == null)
                 {
                     return BadRequest(new OperationResult("Datos enviados invalidos", false));
                 }
 
-                bool brandExist = _context.Brands.Any(c => c.Id == id);
+                bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
+                bool modelExist = await _context.Models.AnyAsync(m => m.Id == id);
 
-                if (brandExist)
+                if (brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+
+                if (modelExist)
                 {
-                    brand.Id = id;
+                    model.Id = id;
 
-                    _context.Entry(brand).State = EntityState.Modified;
+                    _context.Entry(model).State = EntityState.Modified;
 
                     try
                     {
                         await _context.SaveChangesAsync();
-                        return Ok(new OperationResult("Marca modificada correctamente!", true));
+                        return Ok(new OperationResult("Modelo modificado correctamente!", true));
                     }
                     catch (Exception)
                     {
@@ -163,7 +166,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             return StatusCode(403);
         }
 
-        // DELETE api/<BrandController>/5
+        // DELETE api/<ModelController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -182,26 +185,17 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                var brand = await _context.Brands.FindAsync(id);
+                var model = await _context.Models.FindAsync(id);
 
-                if (brand == null)
+                if (model == null)
                 {
                     return NotFound();
                 }
-                try
-                {
-                    var hasModel = await _context.Models.AnyAsync(m => m.BrandID == brand.Id);
-                    if (hasModel) return Unauthorized(new OperationResult("Operación no realizada por motivos de que existen modelos asignadas a este registro."));
 
-                    _context.Brands.Remove(brand);
-                    await _context.SaveChangesAsync();
+                _context.Models.Remove(model);
+                await _context.SaveChangesAsync();
 
-                    return Ok(new OperationResult("Marca eliminada correctamente!", true));
-                }catch (Exception)
-                {
-                    return StatusCode(500);
-                }
-                
+                return Ok(new OperationResult("Modelo eliminado correctamente!", true));
             }
 
             return StatusCode(403);

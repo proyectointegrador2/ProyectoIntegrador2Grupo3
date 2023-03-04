@@ -54,8 +54,8 @@ namespace DB.Data.Entities
 
         public int ModelID { get; set; }
         [ForeignKey("ModelID")]
-        public virtual Model Model { get; set; }
+        public virtual Model? Model { get; set; }
 
-        public IEnumerable<SaleDetails> SaleDetails { get; set; }
+        public IEnumerable<SaleDetails>? SaleDetails { get; set; }
     }
 }

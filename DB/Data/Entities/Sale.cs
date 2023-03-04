@@ -32,8 +32,8 @@ namespace DB.Data.Entities
         public int ClientID { get; set; }
 
         [ForeignKey("ClientID")]
-        public virtual Client Client { get; set; }
+        public virtual Client? Client { get; set; }
 
-        public IEnumerable<SaleDetails> SalesDetails { get; set; }
+        public IEnumerable<SaleDetails>? SalesDetails { get; set; }
     }
 }

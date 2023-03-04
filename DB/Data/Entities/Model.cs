@@ -23,8 +23,8 @@ namespace DB.Data.Entities
         public int BrandID { get; set; }
 
         [ForeignKey("BrandID")]
-        public virtual Brand Brand { get; set; }
+        public virtual Brand? Brand { get; set; }
 
-        public ICollection<Car> Cars { get; set; }
+        public ICollection<Car>? Cars { get; set; }
     }
 }
