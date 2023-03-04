@@ -192,6 +192,10 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                     return NotFound();
                 }
 
+                bool hasCar = await _context.Cars.AnyAsync(c => c.ModelID == id);
+
+                if (hasCar) return Unauthorized(new OperationResult("Operación no realizada por motivos de que existen carros asignados a este registro."));
+
                 _context.Models.Remove(model);
                 await _context.SaveChangesAsync();
 
