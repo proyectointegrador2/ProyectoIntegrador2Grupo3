@@ -2,6 +2,7 @@
 using DB.Data.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
@@ -9,6 +10,8 @@ using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Entities;
 using SistemaDeInventarioDeVentaDeVehiculos.Utils;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Transactions;
 using TokenValidationResult = SistemaDeInventarioDeVentaDeVehiculos.Utils.TokenValidationResult;
 
@@ -19,14 +22,18 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     public class SaleController : Controller
     {
         private readonly CarDbContext _context;
+        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+
         public SaleController(CarDbContext context)
         {
             _context = context;
         }
 
-        //Post: create sale (admin)
+        //Post: create sale (admin) 
         [HttpPost("admin/create")]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateSale([FromBody] RequestSale request)
         {
             using IDbContextTransaction transaction = _context.Database.BeginTransaction();
@@ -49,17 +56,28 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 Sale sale = new();
                 decimal subTotal = 0;
+                sale.ClientID = client.Id;
+                sale.MetodoPago = request.PaymentMethod;
+
+                await _context.Sales.AddAsync(sale);
+                await _context.SaveChangesAsync();
 
                 foreach (ProductCart productCart in productList)
                 {
                     SaleDetails saleResults = new();
                     int CarID = productCart.ProductID;
-                    int CantidadVendida = productCart.Cantidad;
-                    decimal PrecioUnidad = productCart.PrecioUnidad;
+                    int Cantidad = productCart.Cantidad;
+                    var car = _context.Cars.FirstOrDefault(c => c.Id == CarID);
+                    if (car == null) throw new Exception("Ha ocurrido un error, contacte con el soporte.");
+                    decimal PrecioUnidad = car.Precio;
 
-                    if (!_context.Cars.Any(c => c.Id == CarID)) throw new Exception("Ha ocurrido un error, contacte con el soporte.");
+                    //reduce product stock 
+                    if (car.Stock < Cantidad) return BadRequest(new OperationResult("no hay stocks suficientes para la cantidad solicitada", false));
+                    car.Stock -= Cantidad;
+                    _context.Entry(car).State = EntityState.Modified;
 
-                    SaleDetails saleDetails = new() { SaleID = sale.ID, CarID = CarID, CantidadVendida = CantidadVendida, PrecioUnidad = PrecioUnidad };
+                    SaleDetails saleDetails = new() { SaleID = sale.ID, CarID = CarID, CantidadVendida = Cantidad, PrecioUnidad = PrecioUnidad };
+                    saleDetails.SetSubTotal();
                     await _context.SalesDetails.AddAsync(saleDetails);
                     subTotal += saleDetails.SubTotal;
                 };
@@ -68,7 +86,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 sale.ClientID = client.Id;
                 sale.MetodoPago = request.PaymentMethod;
 
-                await _context.Sales.AddAsync(sale);
+                _context.Entry(sale).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 transaction.Commit();
@@ -83,7 +101,6 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
         // POST: SaleController
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ProccessOrder([FromBody] Order order)
         {
             using IDbContextTransaction transaction = _context.Database.BeginTransaction();
@@ -102,36 +119,46 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 var email = tokenValidation.dataSession.email;
 
                 User user = _context.Users.First(u => u.Correo == email);
-                var client = CreateClient(user);
+                Client? client = CreateClient(user, order.Direccion, order.Telefono);
 
                 if (client == null)
                 {
                     client = _context.Clients.FirstOrDefault(c => c.Correo == email);
-                    if (client == null) return NotFound();
+                    if (client == null) return NotFound("Cliente no encontrado");
                 }
 
                 Sale sale = new();
                 decimal subTotal = 0;
+                sale.ClientID = client.Id;
+                sale.MetodoPago = order.PaymentMethod;
+
+                await _context.Sales.AddAsync(sale);
+                await _context.SaveChangesAsync();
 
                 foreach (ProductCart productCart in productList)
                 {
                     SaleDetails saleResults = new();
                     int CarID = productCart.ProductID;
-                    int CantidadVendida = productCart.Cantidad;
-                    decimal PrecioUnidad = productCart.PrecioUnidad;
+                    int Cantidad = productCart.Cantidad;
+                    var car = _context.Cars.FirstOrDefault(c => c.Id == CarID);
+                    if (car == null) throw new Exception("Ha ocurrido un error, contacte con el soporte.");
+                    decimal PrecioUnidad = car.Precio;
 
-                    if (!_context.Cars.Any(c => c.Id == CarID)) throw new Exception("Ha ocurrido un error, contacte con el soporte.");
+                    //reduce product stock 
+                    if (car.Stock < Cantidad) return BadRequest(new OperationResult("no hay stocks suficientes para la cantidad solicitada", false));
+                    car.Stock-= Cantidad;
+                    _context.Entry(car).State = EntityState.Modified;
 
-                    SaleDetails saleDetails = new() { SaleID = sale.ID, CarID = CarID, CantidadVendida = CantidadVendida, PrecioUnidad = PrecioUnidad };
+                    //Create saleDetails and add subTotal
+                    SaleDetails saleDetails = new() { SaleID = sale.ID, CarID = CarID, CantidadVendida = Cantidad, PrecioUnidad = PrecioUnidad };
+                    saleDetails.SetSubTotal();
                     await _context.SalesDetails.AddAsync(saleDetails);
                     subTotal += saleDetails.SubTotal;
                 };
 
                 sale.Total = subTotal;
-                sale.ClientID = client.Id;
-                sale.MetodoPago = order.PaymentMethod;
 
-                await _context.Sales.AddAsync(sale);
+                _context.Entry(sale).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 transaction.Commit();
@@ -146,7 +173,6 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
         //GET: get current order details
         [HttpGet("{id}")]
-        [ValidateAntiForgeryToken]
         public ActionResult GetOrders(int id)
         {
             try 
@@ -159,15 +185,18 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 if (tokenValidation.dataSession == null) return NotFound();
 
                 Sale? sale;
+                Client? currentClient;
 
                 if(tokenValidation.dataSession.role == "admin")
                 {
                     sale = _context.Sales.FirstOrDefault(s => s.ID == id);
+                    if (sale == null) return NotFound();
+                    currentClient = _context.Clients.FirstOrDefault(c => c.Id == sale.ClientID);
                 }
                 else
                 {
                     var email = tokenValidation.dataSession.email;
-                    var currentClient = _context.Clients.FirstOrDefault(c => c.Correo == email);
+                    currentClient = _context.Clients.FirstOrDefault(c => c.Correo == email);
                     if (currentClient == null) return NotFound();
                     sale = _context.Sales.FirstOrDefault(s => s.ClientID == currentClient.Id && s.ID == id);
                 }
@@ -175,8 +204,12 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 if(sale == null) return NotFound();
 
                 var salesDetails = _context.SalesDetails.Where(sd => sd.SaleID == sale.ID).ToList();
-           
-                return Ok(new {details = salesDetails, orderSummary = sale, success = true});
+
+                var results = new { details = salesDetails, orderSummary = sale, client = currentClient, success = true };
+
+                var json = JsonSerializer.Serialize(results, jsonOptions);
+
+                return Ok(json);
             }
 
             catch (Exception)
@@ -187,7 +220,6 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
         //GET: get orders (administrator)
         [HttpGet("admin")]
-        [ValidateAntiForgeryToken]
         public ActionResult GetOrdersInAdministratorView()
         {
             var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
@@ -198,15 +230,15 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             if (tokenValidation.dataSession == null) return NotFound();
             if (tokenValidation.dataSession.role != "admin") return BadRequest(new OperationResult("No autorizado", false));
 
-            var sales = _context.Sales.ToList();
+            var sales = _context.Sales.Include(s => s.Client).Include(s => s.SalesDetails).ToList();
 
-            return Ok(sales);
+            var json = JsonSerializer.Serialize(sales, jsonOptions);
+            return Ok(json);
         }
 
         //GET: get orders (current user)
         [HttpGet]
-        [ValidateAntiForgeryToken]
-        public ActionResult GetOrders()
+        public async Task<ActionResult> GetOrders()
         {
             try
             {
@@ -221,9 +253,10 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 var currentClient = _context.Clients.FirstOrDefault(c => c.Correo == email);
                 if (currentClient == null) return NotFound();
 
-                var sales = _context.Sales.Where(s => s.ClientID == currentClient.Id).ToList();
+                var sales = await _context.Sales.Include(s => s.Client).Include(s => s.SalesDetails).Where(s => s.ClientID == currentClient.Id).ToListAsync();
 
-                return Ok(sales);
+                var json = JsonSerializer.Serialize(sales, jsonOptions);
+                return Ok(json);
             }
             catch (Exception)
             {
@@ -231,32 +264,43 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             }
         }
 
-        public Client? CreateClient(User user)
+        public Client? CreateClient(User user, string address, string phone)
         {
             bool clientExist = _context.Clients.Any(c => c.Correo == user.Correo);
             if (!clientExist)
             {
-
-                if(!string.IsNullOrEmpty(user.Direccion) && !string.IsNullOrEmpty(user.Telefono))
+                Client client;
+                if(!string.IsNullOrEmpty(address) && !string.IsNullOrEmpty(phone))
                 {
-                    Client client = new() 
-                    { 
-                        Nombre = user.Nombre, 
-                        Apellido = user.Apellido, 
+                    client = new()
+                    {
+                        Nombre = user.Nombre,
+                        Apellido = user.Apellido,
+                        Correo = user.Correo,
+                        Direccion = address,
+                        Telefono = phone,
+                    };
+                }
+                else if (!string.IsNullOrEmpty(user.Direccion) && !string.IsNullOrEmpty(user.Telefono)) 
+                {
+                    client = new()
+                    {
+                        Nombre = user.Nombre,
+                        Apellido = user.Apellido,
                         Correo = user.Correo,
                         Direccion = user.Direccion,
                         Telefono = user.Telefono,
                     };
-
-                    _context.Clients.Add(client);
-                    _context.SaveChanges();
-
-                    return client;
                 }
+                else return null;
 
-                return null;
+                _context.Clients.Add(client);
+                _context.SaveChanges();
+
+                return client;
             }
             return null;
         }
+
     }
 }

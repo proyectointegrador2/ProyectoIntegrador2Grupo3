@@ -16,5 +16,8 @@ namespace DB.Data.Entities
         {
             PaymentMethod = paymentMethod;
         }
+
+        public string? Direccion { get; set; }
+        public string? Telefono { get; set; }
     }
 }

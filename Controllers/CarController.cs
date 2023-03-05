@@ -33,7 +33,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 var cars = await _context.Cars.ToListAsync();
 
-                if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+                if (tokenValidation.dataSession != null)
                 {
                     return Ok(cars);
                 }
@@ -61,7 +61,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
             if (!tokenValidation.success) return BadRequest(tokenValidation);
 
-            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            if (tokenValidation.dataSession != null)
             {
                 bool carExist = _context.Models.Any(c => c.Id == id);
 
