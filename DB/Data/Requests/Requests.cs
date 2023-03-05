@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DB.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,18 @@ namespace DB.Data.Requests
         {
             Email = email;
             Password = password;
+        }
+    }
+
+    public class RequestSale
+    {
+        public ProductCart[]? ProductList { get; set; }
+        public string PaymentMethod { get; set; }
+        public int ClientId { get; set; }
+
+        public RequestSale(string paymentMethod)
+        {
+            PaymentMethod = paymentMethod;
         }
     }
 }
