@@ -21,7 +21,7 @@ namespace DB.Data.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public int SaleID { get; set; }
+        public int? SaleID { get; set; }
         [ForeignKey("SaleID")]
         public virtual Sale? Sale { get; set; }
 
