@@ -5,6 +5,7 @@ import './NavMenu.css';
 import { useAuthentication } from './Context/AuthenticationContext';
 import AdminDropdownBar from './Header/AdminDropdownBar';
 
+
 function NavMenu () {
   const [collapsed, setCollapsed] = useState(true)
   const { isLoggedIn, role, handleLogout } = useAuthentication()
