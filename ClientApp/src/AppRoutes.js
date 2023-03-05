@@ -13,6 +13,7 @@ import AddClient from "./components/Client/AddClient/AddClient";
 import EditUser from "./components/EditUser/EditUser"
 import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
+import PagenotFound from "./components/PagenotFound/PagenotFound";
 
 const AppRoutes = [
   {
@@ -83,7 +84,11 @@ const AppRoutes = [
       <AdminRoute>
         <EditClient />
       </AdminRoute>
-  },
+    },
+    {
+        path: '/PagenotFound',
+        element: <PagenotFound />
+    },
 ];
 
 export default AppRoutes;
