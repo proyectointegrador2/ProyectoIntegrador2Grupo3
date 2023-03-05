@@ -31,7 +31,7 @@ function EditUser() {
     return (<Form onSubmit={formik.handleSubmit}>
 
         <FormGroup>
-            <Label for="exampleEmail">
+            <Label for="exampleEditordeUsario">
                 Editor de Usario
             </Label>
             <Input
@@ -44,8 +44,9 @@ function EditUser() {
                 Nombre
             </Label>
             <Input
-                id="exampleNombre"
-                name="Nombre"
+                id="examplename"
+                name="name"
+                type="name"
                 defaultValue={formik.values.name}
                 invalid={formik.touched.name && Boolean(formik.errors.name)}
                 onChange={formik.handleChange}
@@ -63,8 +64,9 @@ function EditUser() {
                 Apellido
             </Label>
             <Input
-                id="exampleApellido"
-                name="Apellido"
+                id="examplelastName"
+                name="lastName"
+                type="lastName"
                 defaultValue={formik.values.lastName}
                 invalid={formik.touched.lastName && Boolean(formik.errors.lastName)}
                 onChange={formik.handleChange}
@@ -87,51 +89,94 @@ function EditUser() {
                 name="email"
 
                 type="email"
+                defaultValue={formik.values.email}
+                invalid={formik.touched.email && Boolean(formik.errors.email)}
+                onChange={formik.handleChange}
             />
+            {
+                Boolean(formik.errors.email) && formik.touched.email &&
+                <FormFeedback>
+                    {formik.errors.email}
+                </FormFeedback>
+            }
         </FormGroup>
         <FormGroup>
-            <Label for="exampleDirección">
-                Dirección
+            <Label for="exampleDireccion">
+                Direccion
             </Label>
             <Input
-                id="examplDirección"
-                name="Dirección"
+                id="examplDireccion"
+                name="Direccion"
+                type="Direccion"
+                
+                defaultValue={formik.values.address}
+                invalid={formik.touched.address && Boolean(formik.errors.address)}
+                onChange={formik.handleChange}
 
                 
             />
+            {
+                Boolean(formik.errors.address) && formik.touched.address &&
+                <FormFeedback>
+                    {formik.errors.address}
+                </FormFeedback>
+            }
         </FormGroup>
         <FormGroup>
-            <Label for="examplePassword">
+            <Label for="exampleusername">
                 Nombre de Usuario
             </Label>
             <Input
-                id="exampleNombre de Usuario"
-                name="Nombre de Usuario"
+                id="exampleusername"
+                name="username"
 
-                type="Nombre de Usuario"
+                type="username"
+                defaultValue={formik.values.username}
+                invalid={formik.touched.username && Boolean(formik.errors.username)}
+                onChange={formik.handleChange}
             />
+            {
+                Boolean(formik.errors.username) && formik.touched.username &&
+                <FormFeedback>
+                    {formik.errors.username}
+                </FormFeedback>
+            }
         </FormGroup>
         <FormGroup>
-            <Label for="exampleContrasena">
+            <Label for="examplepassword">
                 Contraseña
             </Label>
             <Input
-                id="exampleContrasena"
-                name="Contrasena"
+                id="examplepassword"
+                name="password"
 
                 type="password"
+                type="password"
+                defaultValue={formik.values.password}
+                invalid={formik.touched.password && Boolean(formik.errors.password)}
+                onChange={formik.handleChange}
             />
         </FormGroup>
         <FormGroup>
-            <Label for="exampleNumber">
+            <Label for="examplephone">
                 Numero telefonico
             </Label>
             <Input
-                id="exampleNumber"
+                id="examplephone"
                 name="phone"
+                type="phone"
+                defaultValue={formik.values.phone}
+                invalid={formik.touched.phone && Boolean(formik.errors.phone)}
+                onChange={formik.handleChange}
 
                 
             />
+            {
+                Boolean(formik.errors.phone) && formik.touched.phone &&
+                <FormFeedback>
+                    {formik.errors.phone}
+                </FormFeedback>
+            }
         </FormGroup>
 
         <FormGroup>
