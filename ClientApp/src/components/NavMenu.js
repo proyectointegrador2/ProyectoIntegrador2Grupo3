@@ -31,6 +31,9 @@ function NavMenu () {
               <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
             </NavItem>
             <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/ProductDetails">ProductDetails</NavLink>
+            </NavItem>
+            <NavItem>
               {
                 !isLoggedIn ? 
                 <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>:
@@ -40,9 +43,6 @@ function NavMenu () {
             <NavItem>
               {isLoggedIn && role === "admin" && <NavLink tag={Link} className="text-dark" to="/dashboard"><span className='text-success fw-bold'>Ir al Dashboard</span></NavLink>}
             </NavItem>
-                        <NavItem>
-                            <NavLink tag={Link} className="text-dark" to="/ProductDetails">ProductDetails</NavLink>
-                        </NavItem>
           </ul>
         </Collapse>
       </Navbar>
