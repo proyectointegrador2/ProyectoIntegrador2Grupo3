@@ -5,6 +5,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import AddProduct from "./components/DesignAddCar/AddProduct"
 import ProfilePage from "./components/ProfilePage/ProfilePage";
+import ProductDetails from "./components/ProductDetails/ProductDetails";
 import PublicRoute from "./routes/PublicRoute";
 import PrivateRoute from './routes/PrivateRoute'
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -38,6 +39,14 @@ const AppRoutes = [
       <PublicRoute>
         <Login />
       </PublicRoute>
+  },
+  {  path: '/ProfilePage',
+     element: <ProfilePage />
+
+  },
+  {
+      path: '/ProductDetails',
+      element: <ProductDetails/>
   },
   {
     path: "/register",
@@ -88,7 +97,7 @@ const AppRoutes = [
     {
         path: '/PagenotFound',
         element: <PagenotFound />
-    },
+    }
 ];
 
 export default AppRoutes;
