@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DB.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
+using SistemaDeInventarioDeVentaDeVehiculos.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,55 +23,206 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var cars = await _context.Cars.ToListAsync();
+            try
+            {
+                var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
-            return Ok(cars);
+                var tokenValidation = TokenValidationResult.Verify(httpHeader);
+                if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+                var cars = await _context.Cars.ToListAsync();
+
+                if (tokenValidation.dataSession != null)
+                {
+                    return Ok(cars);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500);
+            }
+            
         }
 
         // GET api/<CarController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCarByIdAsync(int id)
         {
-            //TODO add role validation and error code 
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-            var car = await _context.Cars.FindAsync(id);
+            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
-            return Ok(car);
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+            if (tokenValidation.dataSession != null)
+            {
+                bool carExist = _context.Models.Any(c => c.Id == id);
+
+                if (carExist)
+                {
+                    var car = await _context.Cars.FindAsync(id);
+
+                    if (car == null) return NotFound();
+
+                    return Ok(new { success = true, car });
+                }
+
+                else return NotFound();
+            }
+
+            return StatusCode(403);
         }
 
-        public async Task<IActionResult> GetCarsByBrandIdAsync(int id)
-        {
-            //TODO
-
-            return Ok();
-        }
-
-        public async Task<IActionResult> GetCarsByModelIdAsync(int id)
-        {
-            //TODO
-
-            return Ok();
-        }
-
-        // POST api/<CarController>
+        // POST api/<CarController> Create Car
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateCar([FromBody] Car car)
         {
-            //TODO
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (httpHeader == null)
+            {
+                return BadRequest(new OperationResult("No autorizado", false));
+            }
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success)
+            {
+                return BadRequest(tokenValidation);
+            }
+
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                if (car == null)
+                {
+                    return BadRequest(new OperationResult("Datos enviados invalidos", false));
+                }
+
+                bool modelExist = await _context.Models.AnyAsync(m => m.Id == car.ModelID);
+                if (!modelExist) return BadRequest(new OperationResult("Id del modelo no existe", false));
+
+                bool chasisExist = await _context.Cars.AnyAsync(c => c.Chasis == car.Chasis);
+                if (chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
+
+                bool placaExist = await _context.Cars.AnyAsync(c => c.Placa == car.Placa);
+                if (placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
+
+
+                _context.Cars.Add(car);
+                await _context.SaveChangesAsync();
+
+                return Ok(new OperationResult("Carro añadido Correctamente!", true));
+            }
+
+            return StatusCode(403);
         }
 
-        // PUT api/<CarController>/5
+
+        // PUT api/<ModelController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> EditCar(int id, [FromBody] Car car)
         {
-            //TODO
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (httpHeader == null)
+            {
+                return BadRequest(new OperationResult("No autorizado", false));
+            }
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success)
+            {
+                return BadRequest(tokenValidation);
+            }
+
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                if (car == null)
+                {
+                    return BadRequest(new OperationResult("Datos enviados invalidos", false));
+                }
+
+                bool modelExist = await _context.Models.AnyAsync(m => m.Id == car.ModelID);
+                if (!modelExist) return BadRequest(new OperationResult("Id del modelo no existe", false));
+
+                bool chasisExist = await _context.Cars.AnyAsync(c => c.Chasis == car.Chasis);
+                if (chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
+
+                bool placaExist = await _context.Cars.AnyAsync(c => c.Placa == car.Placa);
+                if (placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
+
+                bool carExist = await _context.Cars.AnyAsync(c => c.Id == id);
+
+                if (carExist)
+                {
+                    car.Id = id;
+
+                    _context.Entry(car).State = EntityState.Modified;
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        return Ok(new OperationResult("Carro modificado correctamente!", true));
+                    }
+                    catch (Exception)
+                    {
+                        return StatusCode(500);
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return StatusCode(403);
         }
 
         // DELETE api/<CarController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            //TODO
+            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (httpHeader == null)
+            {
+                return BadRequest(new OperationResult("No autorizado", false));
+            }
+
+            var tokenValidation = TokenValidationResult.Verify(httpHeader);
+            if (!tokenValidation.success)
+            {
+                return BadRequest(tokenValidation);
+            }
+                
+            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            {
+                var car = await _context.Cars.FindAsync(id);
+
+                if (car == null)
+                {
+                    return NotFound();
+                }
+
+                try
+                {
+                    _context.Cars.Remove(car);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new OperationResult("Coche eliminado correctamente!", true));
+                }catch(Exception)
+                {
+                    return StatusCode(500);
+                }
+            }
+
+            return StatusCode(403);
         }
     }
 }

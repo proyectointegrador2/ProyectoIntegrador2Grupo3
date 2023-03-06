@@ -1,29 +1,20 @@
-import React from 'react'
-import { Card, Col, Form, Row, Input, InputGroupText, Button, Label, FormGroup, FormFeedback } from 'reactstrap'
+import React, { useState } from 'react'
+import { Card, Col, Form, Row, Input, InputGroupText, Button, Label, FormGroup, FormFeedback, Spinner } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import './register.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FieldGroup from '../Form/FieldGroup' 
-import * as Yup from 'yup'
+import { userSchema } from '../../helpers/formsSchema'
 import { useFormik } from 'formik'
-
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
-const validationSchema = Yup.object({
-    name: Yup.string("Ingresa un nombre").min(3, "El campo nombre debería de tener al menos 3 carácteres").required("Este campo es requerido"),
-    lastName: Yup.string("Ingresa un apellido").min(3, "El campo Apellido debería de tener al menos 3 carácteres").required("Este campo es requerido"),
-    username: Yup.string().min(5, "El campo Usuario debe de tener al menos 5 carácteres").required("Este campo es requerido"),
-    email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
-    password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
-    confirmPassword: Yup.string("Confirme la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Confirme la contraseña")
-     .oneOf([Yup.ref('password'), null], "La contraseña debe de coincidir"),
-    phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
-    termsAndConditions: Yup.boolean().oneOf([true], "Acepte los terminos y condiciones")
-})
+import { useAlert } from '../Context/AlertContext'
 
 function Register() {
+    const [loading, setLoading] = useState(false)
+    const { showAlert } = useAlert();
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -35,7 +26,7 @@ function Register() {
             phone: '',
             termsAndConditions: false
         },
-        validationSchema: validationSchema,
+        validationSchema: userSchema,
         onSubmit: (values) => {
             const request = {
                 Nombre: values.name,
@@ -46,14 +37,25 @@ function Register() {
                 Telefono: values.phone
             }
 
+            setLoading(true)
             fetch('api/user/register', {
                 method: 'POST',
                 body: JSON.stringify(request),
                 headers: {'Content-Type': 'application/json'}
             })
             .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.error(err))
+            .then(data => {
+                if(data.success){
+                    showAlert("success", data.message)
+                    navigate("/login")
+                }else{
+                    showAlert("danger", data.message)
+                }
+            })
+            .catch(err => {
+                showAlert("danger", err.message)
+            })
+            .finally(() => setLoading(false))
         }
     })
   return (
@@ -238,7 +240,18 @@ function Register() {
                                     </FormGroup>
                                 </Col>
                             </Row>
-                            <Button type='submit' size='lg' color='primary' block className='submit-button m-auto'>Registrarse</Button>
+                            {!loading ?
+                                <Button type='submit' size='lg' color='primary' block className='submit-button m-auto'>Registrarse</Button> :
+                                <Button type='submit' size='lg' color='primary' block className='submit-button m-auto' disabled>
+                                    <Spinner size="sm">
+                                        Loading...
+                                    </Spinner>
+                                    <span>
+                                        {' '}Registrarse
+                                    </span>
+                                </Button>
+                            }
+                            
                         </Form>
                         <span className='text-muted text-center mt-4'>Ya tienes una cuenta? <Link to={'/login'}>Iniciar Sesión</Link></span>
                     </Card>

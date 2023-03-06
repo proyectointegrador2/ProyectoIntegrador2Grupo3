@@ -14,13 +14,13 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Entities
         public User(string role)
         {
 
-            if(role == "usuario" || role == "admin")
+            if(role == "cliente" || role == "admin")
             {
                 Role = role;
             }
             else
             {
-                Role = "usuario";
+                Role = "cliente";
             }
         }
 
@@ -36,6 +36,8 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Entities
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [MinLength(8)]
+        [MaxLength(100)]
         public string? Direccion { get; set; }
 
         [MaxLength(20)]

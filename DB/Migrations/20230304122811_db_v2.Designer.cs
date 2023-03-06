@@ -12,8 +12,8 @@ using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 namespace DB.Migrations
 {
     [DbContext(typeof(CarDbContext))]
-    [Migration("20230220035703_Cars")]
-    partial class Cars
+    [Migration("20230304122811_db_v2")]
+    partial class db_v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,9 +64,8 @@ namespace DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Anio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Anio")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Borrado")
                         .HasColumnType("bit");
@@ -79,15 +78,19 @@ namespace DB.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Cilindraje")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Cilindraje")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Combustible")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -117,8 +120,9 @@ namespace DB.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<float>("Precio")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Precio")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -132,6 +136,55 @@ namespace DB.Migrations
                     b.HasIndex("ModelID");
 
                     b.ToTable("Car", (string)null);
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Borrado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Correo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Estatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("FechaModificacion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("FechaRegistro")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Client", (string)null);
                 });
 
             modelBuilder.Entity("DB.Data.Entities.Model", b =>
@@ -170,6 +223,73 @@ namespace DB.Migrations
                     b.ToTable("Model", (string)null);
                 });
 
+            modelBuilder.Entity("DB.Data.Entities.Sale", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ClientID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Estatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("FechaVenta")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ClientID");
+
+                    b.ToTable("Sale", (string)null);
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.SaleDetails", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("CantidadVendida")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CarID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnidad")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("SaleID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CarID");
+
+                    b.HasIndex("SaleID");
+
+                    b.ToTable("SaleDetails", (string)null);
+                });
+
             modelBuilder.Entity("SistemaDeInventarioDeVentaDeVehiculos.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -191,7 +311,8 @@ namespace DB.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Estatus")
                         .IsRequired()
@@ -204,6 +325,14 @@ namespace DB.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreUsuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -224,9 +353,9 @@ namespace DB.Migrations
             modelBuilder.Entity("DB.Data.Entities.Car", b =>
                 {
                     b.HasOne("DB.Data.Entities.Model", "Model")
-                        .WithMany()
+                        .WithMany("Cars")
                         .HasForeignKey("ModelID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Model");
@@ -235,12 +364,67 @@ namespace DB.Migrations
             modelBuilder.Entity("DB.Data.Entities.Model", b =>
                 {
                     b.HasOne("DB.Data.Entities.Brand", "Brand")
-                        .WithMany()
+                        .WithMany("Models")
                         .HasForeignKey("BrandID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Sale", b =>
+                {
+                    b.HasOne("DB.Data.Entities.Client", "Client")
+                        .WithMany("Sales")
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.SaleDetails", b =>
+                {
+                    b.HasOne("DB.Data.Entities.Car", "Car")
+                        .WithMany("SaleDetails")
+                        .HasForeignKey("CarID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DB.Data.Entities.Sale", "Sale")
+                        .WithMany("SalesDetails")
+                        .HasForeignKey("SaleID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Brand", b =>
+                {
+                    b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Car", b =>
+                {
+                    b.Navigation("SaleDetails");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Client", b =>
+                {
+                    b.Navigation("Sales");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Model", b =>
+                {
+                    b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("DB.Data.Entities.Sale", b =>
+                {
+                    b.Navigation("SalesDetails");
                 });
 #pragma warning restore 612, 618
         }
