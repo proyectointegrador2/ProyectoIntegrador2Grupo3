@@ -72,7 +72,7 @@ function AddProduct() {
                                     ModelID: Number(values.model)
                                 }
 
-                                createCar(request)
+                                await createCar(request)
                                     .then(data => {
                                         if(data.success) {
                                             showAlert("success", data.message)

@@ -1,12 +1,6 @@
+import { getHeadersConfiguration } from "../utils/httpUtils"
+
 const CLIENT_URL = "api/client"
-
-const getHeadersConfiguration = () => {
-    const token = localStorage.getItem("token")
-    const headers = {"Content-Type": "application/json", "Authorization": `Bearer ${token}`}
-
-    return headers
-}
-
 
 export const getClients = async() => {
     const headers = getHeadersConfiguration()

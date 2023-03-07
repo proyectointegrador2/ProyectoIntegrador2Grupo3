@@ -2,7 +2,7 @@ import { Home } from "./components/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import AddProduct from "./components/Car/AddCar/AddCar"
-import ProfilePage from "./components/ProfilePage/ProfilePage";
+import ProfilePage from "./components/Profile/ProfilePage";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
 import PublicRoute from "./routes/PublicRoute";
 import PrivateRoute from './routes/PrivateRoute'
@@ -34,7 +34,7 @@ const AppRoutes = [
       </PublicRoute>
   },
   {  
-    path: '/ProfilePage',
+    path: '/profile',
     element: 
       <PrivateRoute>
         <ProfilePage />

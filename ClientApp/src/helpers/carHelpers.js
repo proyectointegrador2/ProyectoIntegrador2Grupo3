@@ -1,12 +1,7 @@
+import { getHeadersConfiguration } from "../utils/httpUtils"
+
 const CAR_URL = "api/car"
 const MODEL_URL = "api/model"
-
-const getHeadersConfiguration = () => {
-    const token = localStorage.getItem("token")
-    const headers = {"Content-Type": "application/json", "Authorization": `Bearer ${token}`}
-
-    return headers
-}
 
 //Car
 export const createCar = async(request) => {
