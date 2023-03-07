@@ -52,10 +52,6 @@ const AppRoutes = [
       </PublicRoute>
   },
   {
-    path: '/ProfilePage',
-    element: <ProfilePage />
-  },
-  {
     path: "/dashboard",
     element:
         <AdminRoute>
