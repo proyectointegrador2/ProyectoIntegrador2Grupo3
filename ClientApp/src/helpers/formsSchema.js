@@ -36,7 +36,8 @@ export const carSchema = Yup.object({
     price: Yup.number("Ingrese el precio").required("Precio requerido"),
     stock: Yup.number().optional(),
     transmition: Yup.string().oneOf(["Automático", "Manual"], "Valor invalido").required("Este campo es requerido"),
-    fuel: Yup.string().oneOf(["Gasolina", "Gas", "Eléctrico"], "Valor invalido").required("Este campo es requerido")
+    fuel: Yup.string().oneOf(["Gasolina", "Gas", "Eléctrico"], "Valor invalido").required("Este campo es requerido"),
+    description:  Yup.string("Ingresa la descripción del vehículo").required("Este campo es requerido")
 })
 
 export const userProfileSchema = Yup.object({

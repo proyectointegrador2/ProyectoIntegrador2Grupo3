@@ -1,11 +1,13 @@
 import { Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
-import { Button, Card, CardBody, CardTitle, Col, Form, FormFeedback, FormGroup, Input, Label, Row, Spinner } from 'reactstrap'
+import { Card, CardBody, CardTitle, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { editClient, getClientById } from '../../../helpers/clientHelpers'
 import { clientSchema } from '../../../helpers/formsSchema'
 import { useAlert } from '../../Context/AlertContext'
 import { Loading } from '../../Loading/Loading'
+import SubmitButton from '../../Form/SubmitButton'
+import FormFeedBackError from '../../Form/FormFeedBackError'
 
 function EditClient() {
     const [clientData, setClientData] = useState(null)
@@ -86,12 +88,7 @@ function EditClient() {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 />
-                                                {
-                                                    Boolean(errors.name) && touched.name &&
-                                                    <FormFeedback>
-                                                        {errors.name}
-                                                    </FormFeedback>
-                                                }
+                                                <FormFeedBackError error={errors.name} touched={touched.name} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4} md={6} sm={12}>
@@ -105,12 +102,7 @@ function EditClient() {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 />
-                                                {
-                                                    Boolean(errors.lastName) && touched.lastName &&
-                                                    <FormFeedback>
-                                                        {errors.lastName}
-                                                    </FormFeedback>
-                                                }
+                                                <FormFeedBackError error={errors.lastName} touched={touched.lastName} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4} md={6} sm={12}>
@@ -125,12 +117,7 @@ function EditClient() {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 />
-                                                {
-                                                    Boolean(errors.email) && touched.email &&
-                                                    <FormFeedback>
-                                                        {errors.email}
-                                                    </FormFeedback>
-                                                }
+                                                <FormFeedBackError error={errors.email} touched={touched.email} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4} md={6} sm={12}>
@@ -144,12 +131,7 @@ function EditClient() {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 />
-                                                {
-                                                    Boolean(errors.address) && touched.address &&
-                                                    <FormFeedback>
-                                                        {errors.address}
-                                                    </FormFeedback>
-                                                }
+                                                <FormFeedBackError error={errors.address} touched={touched.address} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4} md={6} sm={12}>
@@ -163,24 +145,11 @@ function EditClient() {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 />
-                                                {
-                                                    Boolean(errors.phone) && touched.phone &&
-                                                    <FormFeedback>
-                                                        {errors.phone}
-                                                    </FormFeedback>
-                                                }
+                                                <FormFeedBackError error={errors.phone} touched={touched.phone} />
                                             </FormGroup>
                                         </Col>
                                     </Row>
-                                    {isSubmitting ?
-                                        <Button type='submit' size='lg' color='primary' disabled>
-                                            <Spinner size="sm">Loading...</Spinner>
-                                            <span>
-                                                {' '}Editar
-                                            </span>
-                                        </Button>    :
-                                        <Button type='submit' size='lg' color='primary'>Editar</Button>
-                                    }
+                                    <SubmitButton text="Guardar cambios" loading={isSubmitting} />
                                 </Form>
                             )}
                             </Formik>

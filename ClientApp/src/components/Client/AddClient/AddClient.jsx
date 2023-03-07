@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Button, Card, CardBody, CardTitle, Col, Form, FormFeedback, FormGroup, Input, Label, Row, Spinner } from 'reactstrap'
+import { Card, CardBody, CardTitle, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { clientSchema } from '../../../helpers/formsSchema'
 import { useFormik } from 'formik'
 import { useAlert } from '../../Context/AlertContext'
+import FormFeedBackError from '../../Form/FormFeedBackError'
+import SubmitButton from '../../Form/SubmitButton'
 
 function AddClient() {
     const [loading, setLoading] = useState(false)
@@ -63,7 +65,7 @@ function AddClient() {
                         <CardTitle><h2 className='fw-bold'>Crear Cliente</h2></CardTitle>
                         <CardBody className='p-0'>
                             <Form onSubmit={formik.handleSubmit}>
-                                <Row >
+                                <Row>
                                     <Col lg={4} md={6} sm={12}>
                                         <FormGroup>
                                             <Label for='name'>Nombre</Label>
@@ -74,12 +76,7 @@ function AddClient() {
                                              invalid={formik.touched.name && Boolean(formik.errors.name)}
                                              onChange={formik.handleChange}
                                             />
-                                            {
-                                                Boolean(formik.errors.name) && formik.touched.name &&
-                                                <FormFeedback>
-                                                    {formik.errors.name}
-                                                </FormFeedback>
-                                            }
+                                            <FormFeedBackError error={formik.errors.name} touched={formik.errors.name} />
                                         </FormGroup>
                                     </Col>
                                     <Col lg={4} md={6} sm={12}>
@@ -92,12 +89,7 @@ function AddClient() {
                                              invalid={formik.touched.lastName && Boolean(formik.errors.lastName)}
                                              onChange={formik.handleChange}
                                             />
-                                            {
-                                                Boolean(formik.errors.lastName) && formik.touched.lastName &&
-                                                <FormFeedback>
-                                                    {formik.errors.lastName}
-                                                </FormFeedback>
-                                            }
+                                            <FormFeedBackError error={formik.errors.lastName} touched={formik.errors.lastName} />
                                         </FormGroup>
                                     </Col>
                                     <Col lg={4} md={6} sm={12}>
@@ -111,12 +103,7 @@ function AddClient() {
                                              invalid={formik.touched.email && Boolean(formik.errors.email)}
                                              onChange={formik.handleChange}
                                             />
-                                            {
-                                                Boolean(formik.errors.email) && formik.touched.email &&
-                                                <FormFeedback>
-                                                    {formik.errors.email}
-                                                </FormFeedback>
-                                            }
+                                            <FormFeedBackError error={formik.errors.email} touched={formik.errors.email} />
                                         </FormGroup>
                                     </Col>
                                     <Col lg={4} md={6} sm={12}>
@@ -129,12 +116,7 @@ function AddClient() {
                                              invalid={formik.touched.address && Boolean(formik.errors.address)}
                                              onChange={formik.handleChange}
                                             />
-                                            {
-                                                Boolean(formik.errors.address) && formik.touched.address &&
-                                                <FormFeedback>
-                                                    {formik.errors.address}
-                                                </FormFeedback>
-                                            }
+                                            <FormFeedBackError error={formik.errors.address} touched={formik.errors.address} />
                                         </FormGroup>
                                     </Col>
                                     <Col lg={4} md={6} sm={12}>
@@ -147,24 +129,11 @@ function AddClient() {
                                              invalid={formik.touched.phone && Boolean(formik.errors.phone)}
                                              onChange={formik.handleChange}
                                             />
-                                            {
-                                                Boolean(formik.errors.phone) && formik.touched.phone &&
-                                                <FormFeedback>
-                                                    {formik.errors.phone}
-                                                </FormFeedback>
-                                            }
+                                            <FormFeedBackError error={formik.errors.phone} touched={formik.errors.phone} />
                                         </FormGroup>
                                     </Col>
                                 </Row>
-                                {loading ?
-                                    <Button type='submit' size='lg' color='primary' disabled>
-                                        <Spinner size="sm">Loading...</Spinner>
-                                        <span>
-                                            {' '}Añadir
-                                        </span>
-                                    </Button>    :
-                                    <Button type='submit' size='lg' color='primary'>Añadir</Button>
-                                }
+                                <SubmitButton text={"Añadir"} loading={loading}/>
                             </Form>
                         </CardBody>
                     </Card>
