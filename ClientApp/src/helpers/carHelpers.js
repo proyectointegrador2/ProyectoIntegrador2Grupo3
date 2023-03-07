@@ -18,6 +18,15 @@ export const createCar = async(request) => {
         .catch(err => err)
 }
 
+export const editCar = async(request, id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${CAR_URL}/${id}`, {method: "PUT", headers, body: JSON.stringify(request)})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
 //Models
 export const getModels = async() => {
     const headers = getHeadersConfiguration()
