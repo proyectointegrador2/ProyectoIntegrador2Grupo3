@@ -52,7 +52,7 @@ namespace DB.Data.Entities
         [Range(0, int.MaxValue)]
         public int Stock { get; set; }
         [Required]
-        public string Transmicion { get; set; }
+        public string Transmision { get; set; }
         [Required]
         public string Combustible { get; set; } 
 

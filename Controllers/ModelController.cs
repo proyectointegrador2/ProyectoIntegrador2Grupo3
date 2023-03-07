@@ -1,8 +1,12 @@
 ﻿using DB.Data.Entities;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 using SistemaDeInventarioDeVentaDeVehiculos.Utils;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,12 +18,18 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     {
         private readonly CarDbContext _context;
 
+
+        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+
         public ModelController(CarDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/<MarcaController>
+        // GET: api/<ModelController>
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
@@ -29,11 +39,13 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
             var tokenValidation = TokenValidationResult.Verify(httpHeader);
             if (!tokenValidation.success) return BadRequest(tokenValidation);
 
-            var models = await _context.Models.ToListAsync();
+            var models = await _context.Models.Include(m => m.Brand).ToListAsync();
 
             if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
             {
-                return Ok(models);
+                var json = JsonSerializer.Serialize(models, jsonOptions);
+
+                return Ok(json);
             }
             else
             {
