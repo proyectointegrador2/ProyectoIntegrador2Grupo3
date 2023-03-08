@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 using SistemaDeInventarioDeVentaDeVehiculos.Utils;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +15,11 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     public class CarController : ControllerBase
     {
         private readonly CarDbContext _context;
+
+        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
 
         public CarController(CarDbContext context)
         {
@@ -35,6 +42,8 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 if (tokenValidation.dataSession != null)
                 {
+                    var json = JsonSerializer.Serialize(cars, jsonOptions);
+
                     return Ok(cars);
                 }
                 else
@@ -63,15 +72,18 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
             if (tokenValidation.dataSession != null)
             {
-                bool carExist = _context.Models.Any(c => c.Id == id);
+                bool carExist = _context.Cars.Any(c => c.Id == id);
 
                 if (carExist)
                 {
-                    var car = await _context.Cars.FindAsync(id);
+                    #pragma warning disable CS8602
+                    var car = await _context.Cars.Include(c => c.Model.Brand).FirstOrDefaultAsync(c => c.Id == id);
+
+                    var json = JsonSerializer.Serialize(car, jsonOptions);
 
                     if (car == null) return NotFound();
 
-                    return Ok(new { success = true, car });
+                    return Ok(new { success = true, data = json });
                 }
 
                 else return NotFound();
@@ -148,39 +160,35 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                     return BadRequest(new OperationResult("Datos enviados invalidos", false));
                 }
 
+                Car? originalCar = await _context.Cars.FirstOrDefaultAsync(c => c.Id == id);
+
+                if(originalCar == null){
+                    return NotFound();
+                }
+
+                _context.Entry(originalCar).State = EntityState.Detached;
+
                 bool modelExist = await _context.Models.AnyAsync(m => m.Id == car.ModelID);
                 if (!modelExist) return BadRequest(new OperationResult("Id del modelo no existe", false));
 
                 bool chasisExist = await _context.Cars.AnyAsync(c => c.Chasis == car.Chasis);
-                if (chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
+                if (originalCar.Chasis != car.Chasis && chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
 
                 bool placaExist = await _context.Cars.AnyAsync(c => c.Placa == car.Placa);
-                if (placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
+                if (originalCar.Placa != car.Placa && placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
 
-                bool carExist = await _context.Cars.AnyAsync(c => c.Id == id);
-
-                if (carExist)
+                try
                 {
                     car.Id = id;
-
                     _context.Entry(car).State = EntityState.Modified;
-
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                        return Ok(new OperationResult("Carro modificado correctamente!", true));
-                    }
-                    catch (Exception)
-                    {
-                        return StatusCode(500);
-                    }
+                    await _context.SaveChangesAsync();
+                    return Ok(new OperationResult("Carro modificado correctamente!", true));
                 }
-                else
+                catch (Exception)
                 {
-                    return NotFound();
+                    return StatusCode(500);
                 }
             }
-
             return StatusCode(403);
         }
 
