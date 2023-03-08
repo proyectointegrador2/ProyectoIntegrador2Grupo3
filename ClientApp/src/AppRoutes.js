@@ -13,6 +13,7 @@ import EditUser from "./components/EditUser/EditUser"
 import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 import PagenotFound from "./components/PagenotFound/PagenotFound";
+import EditCar from "./components/Car/EditCar/EditCar";
 
 const AppRoutes = [
   {
@@ -24,6 +25,13 @@ const AppRoutes = [
     element: 
       <AdminRoute>
         <AddProduct />
+      </AdminRoute>
+  },
+  {
+    path: '/dashboard/Edit-Product/:id',
+    element:
+      <AdminRoute>
+        <EditCar/>
       </AdminRoute>
   },
   {
