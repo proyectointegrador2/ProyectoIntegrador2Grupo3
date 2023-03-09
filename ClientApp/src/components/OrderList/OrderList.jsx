@@ -12,7 +12,7 @@ import
     Col
 } from 'reactstrap';
 
-function OrderDetails() {
+function OrderList() {
     return (
         <div>
             <h1>Order List</h1>
@@ -282,4 +282,4 @@ function OrderDetails() {
         )
 }
 
-export default OrderDetails
+export default OrderList

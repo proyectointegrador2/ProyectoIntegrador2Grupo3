@@ -28,7 +28,7 @@ function NavMenu () {
                 <NavLink tag={Link} className="text-dark" to="/ProductDetails">ProductDetails</NavLink>
             </NavItem>
             <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/OrderDetails">OderList</NavLink>
+                <NavLink tag={Link} className="text-dark" to="/OrderList">OderList</NavLink>
             </NavItem>
             <NavItem>
               {
