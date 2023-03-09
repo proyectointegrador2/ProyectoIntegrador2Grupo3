@@ -14,6 +14,7 @@ import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 import PagenotFound from "./components/PagenotFound/PagenotFound";
 import EditCar from "./components/Car/EditCar/EditCar";
+import OrderDetails from "./components/OrderList/OrderList";
 
 const AppRoutes = [
   {
@@ -97,6 +98,10 @@ const AppRoutes = [
     {
         path: '/PagenotFound',
         element: <PagenotFound />
+    },
+    {
+        path: '/OrderDetails',
+        element: <OrderDetails/>
     }
 ];
 
