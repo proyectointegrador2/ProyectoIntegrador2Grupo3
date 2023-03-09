@@ -33,23 +33,30 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
-
-            var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success) return BadRequest(tokenValidation);
-
-            var models = await _context.Models.Include(m => m.Brand).ToListAsync();
-
-            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            try
             {
-                var json = JsonSerializer.Serialize(models, jsonOptions);
+                var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
-                return Ok(json);
-            }
-            else
+                var tokenValidation = TokenValidationResult.Verify(httpHeader);
+                if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+                var models = await _context.Models.Include(m => m.Brand).ToListAsync();
+
+                if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+                {
+                    var json = JsonSerializer.Serialize(models, jsonOptions);
+
+                    return Ok(json);
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }catch (Exception)
             {
-                return NotFound();
+                return StatusCode(500);
             }
         }
 

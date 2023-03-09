@@ -17,6 +17,8 @@ import EditCar from "./components/Car/EditCar/EditCar";
 import BrandList from "./components/Brand/BrandList/BrandList";
 import AddBrand from "./components/Brand/AddBrand/AddBrand";
 import EditBrand from "./components/Brand/EditBrand/EditBrand";
+import AddModel from "./components/Model/AddModel/AddModel";
+import ModelList from "./components/Model/ModelList/ModelList";
 
 const AppRoutes = [
   {
@@ -116,6 +118,26 @@ const AppRoutes = [
       element: 
         <AdminRoute>
           <EditBrand/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Edit-Model/:id",
+      element: 
+        <AdminRoute>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/New-Model",
+      element:
+        <AdminRoute>
+          <AddModel/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Model-List",
+      element:
+        <AdminRoute>
+          <ModelList/>
         </AdminRoute>
     },
     {

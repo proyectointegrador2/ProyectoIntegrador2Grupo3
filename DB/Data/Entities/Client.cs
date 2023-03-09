@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DB.Data.Entities
@@ -29,7 +30,7 @@ namespace DB.Data.Entities
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         public string Correo { get; set; }
-
+        [JsonIgnore]
         public IEnumerable<Sale>? Sales { get; set; }
     }
 }

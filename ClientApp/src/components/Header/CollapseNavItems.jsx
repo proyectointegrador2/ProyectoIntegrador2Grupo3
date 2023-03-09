@@ -41,6 +41,14 @@ function CollapseNavItems({dropdownToggle}) {
                 {
                     path: "/dashboard/New-Brand",
                     text: "Agregar marca"
+                },
+                {
+                    path: "/dashboard/New-Model",
+                    text: "Nuevo Modelo"
+                },
+                {
+                    path: "/dashboard/Model-List",
+                    text: "Ver Modelos"
                 }
             ]
         },

@@ -47,9 +47,13 @@ export const userProfileSchema = Yup.object({
     password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
     phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
     address: Yup.string().optional()
-    
 })
 
 export const brandSchema = Yup.object({
     name: Yup.string("Ingresa un nombre").required("Este campo es requerido")
+})
+
+export const modelSchema = Yup.object({
+    name: Yup.string("Ingresa un nombre").required("Este campo es requerido"),
+    brandID: Yup.string().required("Se requiere la marca")
 })
