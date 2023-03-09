@@ -2,8 +2,9 @@ import { getHeadersConfiguration } from "../utils/httpUtils"
 
 const CAR_URL = "api/car"
 const MODEL_URL = "api/model"
+const BRAND_URL = "api/brand"
 
-//Car
+/***********Car************/
 export const getCarByID = async(id) => {
     const headers = getHeadersConfiguration()
 
@@ -51,12 +52,95 @@ export const editCar = async(request, id) => {
         .catch(err => err)
 }
 
-//Models
+/***********Models************/
+export const createModel = async(request) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(MODEL_URL, {method: "POST", headers, body: JSON.stringify(request)})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
 export const getModels = async() => {
     const headers = getHeadersConfiguration()
 
     return await fetch(MODEL_URL, { headers })
         .then(res => res.json())
         .then(data => data["$values"])
+        .catch(err => err)
+}
+
+export const getModelByID = async(id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${MODEL_URL}/${id}`, { headers })
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const editModel = async(request, id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${MODEL_URL}/${id}`, {method: "PUT", headers, body: JSON.stringify(request)})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const deleteModel = async(id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${MODEL_URL}/${id}`, {method: "DELETE", headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+/*********Brands**********/
+
+export const createBrand = async(request) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(BRAND_URL, {method: "POST", headers, body: JSON.stringify(request)})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const getBrands = async() => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(BRAND_URL, { headers })
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const getBrandByID = async(id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${BRAND_URL}/${id}`, { headers })
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const editBrand = async(request, id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${BRAND_URL}/${id}`, {method: "PUT", headers, body: JSON.stringify(request)})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const deleteBrand = async(id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${BRAND_URL}/${id}`, {method: "DELETE", headers})
+        .then(res => res.json())
+        .then(data => data)
         .catch(err => err)
 }

@@ -14,6 +14,9 @@ import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 import PagenotFound from "./components/PagenotFound/PagenotFound";
 import EditCar from "./components/Car/EditCar/EditCar";
+import BrandList from "./components/Brand/BrandList/BrandList";
+import AddBrand from "./components/Brand/AddBrand/AddBrand";
+import EditBrand from "./components/Brand/EditBrand/EditBrand";
 
 const AppRoutes = [
   {
@@ -93,6 +96,27 @@ const AppRoutes = [
       <AdminRoute>
         <EditClient />
       </AdminRoute>
+    },
+    {
+      path: "/dashboard/Brand-List",
+      element:
+        <AdminRoute>
+          <BrandList/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/New-Brand",
+      element: 
+        <AdminRoute>
+          <AddBrand/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Edit-Brand/:id",
+      element: 
+        <AdminRoute>
+          <EditBrand/>
+        </AdminRoute>
     },
     {
         path: '/PagenotFound',

@@ -49,3 +49,7 @@ export const userProfileSchema = Yup.object({
     address: Yup.string().optional()
     
 })
+
+export const brandSchema = Yup.object({
+    name: Yup.string("Ingresa un nombre").required("Este campo es requerido")
+})

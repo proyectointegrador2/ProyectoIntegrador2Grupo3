@@ -34,6 +34,14 @@ function CollapseNavItems({dropdownToggle}) {
                     path: "/dashboard/Product-List",
                     text: "Lista de productos"
                 },
+                {
+                    path: "/dashboard/Brand-List",
+                    text: "Ver Marcas"
+                },
+                {
+                    path: "/dashboard/New-Brand",
+                    text: "Agregar marca"
+                }
             ]
         },
         {
