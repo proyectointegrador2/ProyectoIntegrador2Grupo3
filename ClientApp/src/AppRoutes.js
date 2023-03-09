@@ -4,6 +4,8 @@ import { Home } from "./components/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import AddProduct from "./components/DesignAddCar/AddProduct"
+import DesignInventory from "../src/components/Design-Inventory/Design-Inventory";
+
 
 const AppRoutes = [
   {
@@ -29,7 +31,12 @@ const AppRoutes = [
   {
     path: '/register',
     element: <Register />
-  }
+    },
+    {
+        path: '/DesignInventory',
+        element: <DesignInventory />
+    }
+    
 ];
 
 export default AppRoutes;
