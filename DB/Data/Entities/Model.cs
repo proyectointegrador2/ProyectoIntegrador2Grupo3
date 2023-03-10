@@ -20,7 +20,7 @@ namespace DB.Data.Entities
         [MinLength(3)]
         [MaxLength(15)]
         public string Nombre { get; set; }
-
+        [JsonPropertyName("brandId")]
         public int BrandID { get; set; }
 
         [ForeignKey("BrandID")]

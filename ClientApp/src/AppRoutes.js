@@ -19,6 +19,7 @@ import AddBrand from "./components/Brand/AddBrand/AddBrand";
 import EditBrand from "./components/Brand/EditBrand/EditBrand";
 import AddModel from "./components/Model/AddModel/AddModel";
 import ModelList from "./components/Model/ModelList/ModelList";
+import EditModel from "./components/Model/EditModel/EditModel";
 
 const AppRoutes = [
   {
@@ -138,6 +139,13 @@ const AppRoutes = [
       element:
         <AdminRoute>
           <ModelList/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Edit-Model/:id",
+      element:
+        <AdminRoute>
+          <EditModel/>
         </AdminRoute>
     },
     {

@@ -21,7 +21,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
-            ReferenceHandler = ReferenceHandler.Preserve
+            ReferenceHandler = ReferenceHandler.Preserve,
         };
 
         public ModelController(CarDbContext context)
@@ -41,7 +41,19 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 var tokenValidation = TokenValidationResult.Verify(httpHeader);
                 if (!tokenValidation.success) return BadRequest(tokenValidation);
 
-                var models = await _context.Models.Include(m => m.Brand).ToListAsync();
+                #pragma warning disable CS8602
+                var models = await _context.Models.Select(m => new
+                {
+                    m.Id,
+                    m.Nombre,
+                    m.BrandID,
+                    brand = new
+                    {
+                        m.Brand.Id,
+                        m.Brand.Nombre
+                    }
+                }).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
                 {

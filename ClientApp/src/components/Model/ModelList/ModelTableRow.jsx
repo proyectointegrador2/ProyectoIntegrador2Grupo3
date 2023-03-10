@@ -41,7 +41,7 @@ function ModelTableRow({ id, name, brand }) {
                     <DropdownToggle caret outline color='primary'>Acción</DropdownToggle>
                     <DropdownMenu>
                         <DropdownItem>
-                            <Link to={`/dashboard/Edit-Brand/${id}`} replace className='me-1 text-black text-decoration-none'>
+                            <Link to={`/dashboard/Edit-Model/${id}`} replace className='me-1 text-black text-decoration-none'>
                                 <FontAwesomeIcon icon={faPenToSquare} color='#0d6efd' />
                                 <span className='ms-1'>Editar</span>
                             </Link>
