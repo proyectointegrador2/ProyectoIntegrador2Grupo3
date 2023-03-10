@@ -16,7 +16,6 @@ function ModelList() {
     useEffect(() => {
         getModels()
             .then(data => {
-                console.log(data)
                 setData(data)
             })
             .catch(err => {

@@ -170,7 +170,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
                 bool modelExist = await _context.Models.AnyAsync(m => m.Id == id);
 
-                if (brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+                if (!brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
 
                 if (modelExist)
                 {

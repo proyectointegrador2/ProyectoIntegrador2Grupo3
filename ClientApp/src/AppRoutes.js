@@ -122,12 +122,6 @@ const AppRoutes = [
         </AdminRoute>
     },
     {
-      path: "/dashboard/Edit-Model/:id",
-      element: 
-        <AdminRoute>
-        </AdminRoute>
-    },
-    {
       path: "/dashboard/New-Model",
       element:
         <AdminRoute>

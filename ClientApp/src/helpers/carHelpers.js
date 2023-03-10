@@ -16,7 +16,7 @@ export const getCarByID = async(id) => {
 
 export const fetchCarAndModelData = async(carId) => {
     const headers = getHeadersConfiguration()
-
+    console.log(headers)
     return await Promise.all(
         [
             fetch(`${CAR_URL}/${carId}`, { headers }),
@@ -96,6 +96,27 @@ export const deleteModel = async(id) => {
         .then(res => res.json())
         .then(data => data)
         .catch(err => err)
+}
+
+
+export const fetchCurrentModelAndBrandsData = async(modelId) => {
+    const headers = getHeadersConfiguration()
+
+    return await Promise.all(
+        [
+            fetch(`${MODEL_URL}/${modelId}`, { headers }),
+            fetch(BRAND_URL, { headers })
+        ]
+    ).then(responses => Promise.all(responses.map(res => res.json())))
+     .then(data => {
+        const [data1, data2] = data;
+
+        return {
+            ...data1,
+            brands: data2
+        }
+    })
+      .catch(err => console.logerr)
 }
 
 /*********Brands**********/

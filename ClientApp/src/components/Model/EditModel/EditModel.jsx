@@ -2,32 +2,35 @@ import { Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 import { Card, CardBody, CardTitle, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
-import { brandSchema } from '../../../helpers/formsSchema'
+import { modelSchema } from '../../../helpers/formsSchema'
 import { useAlert } from '../../Context/AlertContext'
 import { Loading } from '../../Loading/Loading'
 import SubmitButton from '../../Form/SubmitButton'
 import FormFeedBackError from '../../Form/FormFeedBackError'
-import { editModel, getModelByID } from '../../../helpers/carHelpers'
+import { editModel, fetchCurrentModelAndBrandsData } from '../../../helpers/carHelpers'
 
 function EditModel() {
-    const [modelData, setModelData] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [modelData, setModelData] = useState(null)
+    const [brandsData, setBrandsData] = useState([])
+
     const { id } = useParams()
 
     const { showAlert } = useAlert();
 
     useEffect(() => {
-        getModelByID(id)
+        fetchCurrentModelAndBrandsData(id)
          .then(data => {
-            if(data.success){
+            if(data.success && data.brands){
+                setBrandsData(data.brands)
                 setModelData(data.model)
             }else{
-                setModelData(null)
+                showAlert("danger", data.message)
             }
          })
-         .catch(err => console.error(err))
+         .catch(err => showAlert("danger", err.message))
          .finally(() => setLoading(false))
-    }, [id])
+    }, [id, showAlert])
 
     if(loading){
         return <Loading/>
@@ -52,10 +55,11 @@ function EditModel() {
                                 name: modelData.nombre,
                                 brandID: modelData.brandId
                              }}
-                             validationSchema={brandSchema}
+                             validationSchema={modelSchema}
                              onSubmit={async (values) => {
                                 const request = {
                                     Nombre: values.name,
+                                    BrandID: values.brandID
                                 }
                                 await editModel(request, id).then(data => {
                                     if(data.success){
@@ -97,7 +101,7 @@ function EditModel() {
                                             >
                                                 <option value="">Elije una marca...</option>
                                                 {
-                                                    brandData.map(brand => <option key={brand.id} value={brand.id}>{brand.nombre}</option>)
+                                                    brandsData.map(brand => <option key={brand.id} value={brand.id}>{brand.nombre}</option>)
                                                 }
                                             </Input>
                                             <FormFeedBackError error={errors.brandID} touched={errors.brandID} />
