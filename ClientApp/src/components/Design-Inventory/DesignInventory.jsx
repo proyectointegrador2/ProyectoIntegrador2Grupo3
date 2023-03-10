@@ -193,7 +193,7 @@ Example.propTypes = {
 };
 
 //export default Example;
-export default function MyApp() {
+export default function DesignInventory() {
     return (
         <div>
             <h1>Product list</h1>
