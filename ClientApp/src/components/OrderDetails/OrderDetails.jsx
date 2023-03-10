@@ -14,7 +14,7 @@ Col
 function OrderDetails() {
     return (
         <div>
-            <h1>Order List</h1>
+            <h1>Order Details</h1>
 
             <Card
                 style={{
@@ -34,7 +34,7 @@ function OrderDetails() {
                         <Col className="bg-light" md="3">
                             <div>
                                 <p>SHIPPED DATE:</p>
-                                <p><strong>01 Oct, 2019</strong></p>
+                                <p><strong>01 Oct, 2022</strong></p>
                             </div>
                         </Col>
                         <Col className="bg-light" md="3">
@@ -52,45 +52,13 @@ function OrderDetails() {
                     </Row>
 
                     <Row>
-                        <Col className="bg-light">
+                        <Col className="">
                             <Row>
-                                <Col className="bg-light" md="1">
+                                <Col className="margenSuperior" md="12">
                                     <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
+                                        <h4>Order Items (3)</h4>
                                     </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light margenIzquierdoButton marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Order Details
-                                    </Button>
-                                    {' '}
-                                </Col>
-
-                                <Col className="bg-light marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Track Orders
-                                    </Button>
-                                    {' '}
-                                </Col>
+                                </Col>                               
 
                             </Row>
 
@@ -99,182 +67,74 @@ function OrderDetails() {
 
                     </Row>
 
+                    <hr/>
+
+                    <Row>
+                        <Col className="" md="3">
+                            <div>
+                                <Col className="" md="4">
+                                    <div>
+                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
+                                    </div>
+                                </Col>
+                            </div>
+                        </Col>
+                        <Col className="" md="3">
+                            <div>
+                                <p><strong>Nombre</strong></p>
+                                <p>$ 500.00</p>
+                                <br />
+                                <p><strong>Color: Rojo</strong></p>
+                                
+                            </div>
+                        </Col>                       
+                    </Row>
+                    <hr/>
+                    <Row>
+                        <Col className="" md="3">
+                            <div>
+                                <Col className="" md="4">
+                                    <div>
+                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
+                                    </div>
+                                </Col>
+                            </div>
+                        </Col>
+                        <Col className="" md="3">
+                            <div>
+                                <p><strong>Nombre</strong></p>
+                                <p>$ 500.00</p>
+                                <br />
+                                <p><strong>Color: Rojo</strong></p>
+
+                            </div>
+                        </Col>
+                    </Row>
+                    <hr />
+                    <Row>
+                        <Col className="" md="3">
+                            <div>
+                                <Col className="" md="4">
+                                    <div>
+                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
+                                    </div>
+                                </Col>
+                            </div>
+                        </Col>
+                        <Col className="" md="3">
+                            <div>
+                                <p><strong>Nombre</strong></p>
+                                <p>$ 500.00</p>
+                                <br />
+                                <p><strong>Color: Rojo</strong></p>
+
+                            </div>
+                        </Col>
+                    </Row>
                 </CardBody>
             </Card>
 
-            <Card
-                style={{
-                    width: '70rem',
-                    marginBottom: '30px'
-
-                }}
-
-            >
-
-                <CardBody>
-                    <Row>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>ORDER NO:</p>
-                                <p><strong>673290789</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>SHIPPED DATE:</p>
-                                <p><strong>01 Oct, 2019</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>STATUS</p>
-                                <p><strong>Awating Delivery</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>ORDER AMOUNT</p>
-                                <p><strong>$259.00</strong></p>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col className="bg-light">
-                            <Row>
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light margenIzquierdoButton marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Order Details
-                                    </Button>
-                                    {' '}
-                                </Col>
-
-                                <Col className="bg-light marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Track Orders
-                                    </Button>
-                                    {' '}
-                                </Col>
-
-                            </Row>
-
-                        </Col>
-
-
-                    </Row>
-
-                </CardBody>
-            </Card>
-
-            <Card
-                style={{
-                    width: '70rem',
-                    marginBottom: '30px'
-                }}
-            >
-
-                <CardBody>
-                    <Row>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>ORDER NO:</p>
-                                <p><strong>673290789</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>SHIPPED DATE:</p>
-                                <p><strong>01 Oct, 2019</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>STATUS</p>
-                                <p><strong>Awating Delivery</strong></p>
-                            </div>
-                        </Col>
-                        <Col className="bg-light" md="3">
-                            <div>
-                                <p>ORDER AMOUNT</p>
-                                <p><strong>$259.00</strong></p>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col className="bg-light">
-                            <Row>
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light" md="1">
-                                    <div>
-                                        <img className="tamanoImagen  margenSuperior" src="https://www.elcarrocolombiano.com/wp-content/uploads/2021/02/20210208-TOP-75-CARROS-MAS-VENDIDOS-DE-COLOMBIA-EN-ENERO-2021-01.jpg" />
-                                    </div>
-                                </Col>
-
-                                <Col className="bg-light margenIzquierdoButton marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Order Details
-                                    </Button>
-                                    {' '}
-                                </Col>
-
-                                <Col className="bg-light marginSuperiorBotones" md="3">
-                                    <Button outline color="dark" className="Borde" >
-                                        Track Orders
-                                    </Button>
-                                    {' '}
-                                </Col>
-
-                            </Row>
-
-                        </Col>
-
-
-                    </Row>
-
-                </CardBody>
-            </Card>
+           
 
         </div>
 
