@@ -5,7 +5,7 @@ import Summary from './Summary'
 
 
 function Dashboard() {
-
+    
     useEffect(() => {
         //TODO this code is not supposed to be used in the future. Just for testing objectives.
         

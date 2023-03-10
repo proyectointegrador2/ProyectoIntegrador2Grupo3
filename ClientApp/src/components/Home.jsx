@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Dashboard from './Dashboard/Dashboard';
 
 export class Home extends Component {
   static displayName = Home.name;
@@ -7,7 +6,8 @@ export class Home extends Component {
   render() {
     return (
       <div>
-        <Dashboard />
+        {/* TODO product inventory list */}
+        Here should be placed all product Inventory available to show. Common User can access to buy item, admin view can edit and remove.
       </div>
     );
   }
