@@ -1,7 +1,7 @@
 import { Home } from "./components/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
-import AddProduct from "./components/Car/AddCar/AddCar"
+import AddCar from "./components/Car/AddCar/AddCar"
 import ProfilePage from "./components/Profile/ProfilePage";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
 import PublicRoute from "./routes/PublicRoute";
@@ -27,10 +27,10 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/dashboard/Add-Product',
+    path: '/dashboard/Add-Car',
     element: 
       <AdminRoute>
-        <AddProduct />
+        <AddCar />
       </AdminRoute>
   },
   {

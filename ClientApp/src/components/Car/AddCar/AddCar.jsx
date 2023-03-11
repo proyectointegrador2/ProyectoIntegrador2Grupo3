@@ -7,7 +7,7 @@ import CarForm from '../CarForm';
 import { createCar, getModels } from '../../../helpers/carHelpers';
 import { Loading } from '../../Loading/Loading';
 
-function AddProduct() {
+function AddCar() {
     const [loading, setLoading] = useState(true)
     const { showAlert } = useAlert();
     const [modelData, setModelData] = useState([])
@@ -18,7 +18,7 @@ function AddProduct() {
             setModelData(data)
          })
          .catch(() => showAlert("danger", "Ha ocurrido un problema! Contacte con el soporte."))
-         .finally(setLoading(false))
+         .finally(() => setLoading(false))
     }, [showAlert])
 
 
@@ -95,4 +95,4 @@ function AddProduct() {
     )
 }
 
-export default AddProduct;
+export default AddCar;
