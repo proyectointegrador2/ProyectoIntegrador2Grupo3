@@ -27,13 +27,29 @@ function CollapseNavItems({dropdownToggle}) {
             icon: faBox,
             children: [ 
                 {
-                    path: "/dashboard/Add-Product",
-                    text: "Agregar Producto"
+                    path: "/dashboard/Add-Car",
+                    text: "Agregar Vehículo"
                 },
                 {
-                    path: "/dashboard/Product-List",
-                    text: "Lista de productos"
+                    path: "/dashboard/Car-List",
+                    text: "Lista de vehículos"
                 },
+                {
+                    path: "/dashboard/Brand-List",
+                    text: "Ver Marcas"
+                },
+                {
+                    path: "/dashboard/New-Brand",
+                    text: "Agregar marca"
+                },
+                {
+                    path: "/dashboard/New-Model",
+                    text: "Nuevo Modelo"
+                },
+                {
+                    path: "/dashboard/Model-List",
+                    text: "Ver Modelos"
+                }
             ]
         },
         {

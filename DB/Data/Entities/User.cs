@@ -47,6 +47,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Data.Entities
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         public string Correo { get; set; }
+        public string? ImageURL { get; set; }
 
         [MaxLength(20)]
         public string Role { get; set; }
