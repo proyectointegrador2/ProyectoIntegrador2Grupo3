@@ -48,7 +48,8 @@ export const userProfileSchema = Yup.object({
     email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
     password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
     phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
-    address: Yup.string().optional()
+    address: Yup.string().optional(),
+    imageUrl: Yup.string().optional().nullable()
 })
 
 export const brandSchema = Yup.object({
