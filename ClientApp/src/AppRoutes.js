@@ -1,7 +1,7 @@
 import { Home } from "./components/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
-import AddProduct from "./components/Car/AddCar/AddCar"
+import AddCar from "./components/Car/AddCar/AddCar"
 import ProfilePage from "./components/Profile/ProfilePage";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
 import PublicRoute from "./routes/PublicRoute";
@@ -14,7 +14,13 @@ import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 import PagenotFound from "./components/PagenotFound/PagenotFound";
 import EditCar from "./components/Car/EditCar/EditCar";
-import DesignInventory from "./components/Design-Inventory/DesignInventory";
+import BrandList from "./components/Brand/BrandList/BrandList";
+import AddBrand from "./components/Brand/AddBrand/AddBrand";
+import EditBrand from "./components/Brand/EditBrand/EditBrand";
+import AddModel from "./components/Model/AddModel/AddModel";
+import ModelList from "./components/Model/ModelList/ModelList";
+import EditModel from "./components/Model/EditModel/EditModel";
+import CarList from "./components/Car/CarList/CarList";
 
 const AppRoutes = [
   {
@@ -22,14 +28,14 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/dashboard/Add-Product',
+    path: '/dashboard/Add-Car',
     element: 
       <AdminRoute>
-        <AddProduct />
+        <AddCar />
       </AdminRoute>
   },
   {
-    path: '/dashboard/Edit-Product/:id',
+    path: '/dashboard/Edit-Car/:id',
     element:
       <AdminRoute>
         <EditCar/>
@@ -96,14 +102,56 @@ const AppRoutes = [
       </AdminRoute>
     },
     {
+      path: "/dashboard/Brand-List",
+      element:
+        <AdminRoute>
+          <BrandList/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/New-Brand",
+      element: 
+        <AdminRoute>
+          <AddBrand/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Edit-Brand/:id",
+      element: 
+        <AdminRoute>
+          <EditBrand/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/New-Model",
+      element:
+        <AdminRoute>
+          <AddModel/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Model-List",
+      element:
+        <AdminRoute>
+          <ModelList/>
+        </AdminRoute>
+    },
+    {
+      path: "/dashboard/Edit-Model/:id",
+      element:
+        <AdminRoute>
+          <EditModel/>
+        </AdminRoute>
+    },
+    {
         path: '/PagenotFound',
         element: <PagenotFound />
     },
     {
-        path: "/dashboard/Product-List",
+        path: "/dashboard/Car-List",
         element:
             <AdminRoute>
-                <DesignInventory />
+                <CarList />
         </AdminRoute>
     }
 ];

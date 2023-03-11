@@ -36,7 +36,9 @@ export const carSchema = Yup.object({
     stock: Yup.number().optional(),
     transmition: Yup.string().oneOf(["Automática", "Manual"], "Valor invalido").required("Este campo es requerido"),
     fuel: Yup.string().oneOf(["Gasolina", "Gas", "Eléctrico"], "Valor invalido").required("Este campo es requerido"),
-    description:  Yup.string("Ingresa la descripción del vehículo").required("Este campo es requerido")
+    description:  Yup.string("Ingresa la descripción del vehículo").required("Este campo es requerido"),
+    imageUrl: Yup.string().optional().nullable(),
+    imageData: Yup.string().optional()
 })
 
 export const userProfileSchema = Yup.object({
@@ -46,6 +48,15 @@ export const userProfileSchema = Yup.object({
     email: Yup.string("Ingrese un correo").email("Ingrese un formato de email válido").required("Este campo es requerido"),
     password: Yup.string("Ingrese la contraseña").min(8, "La contraseña debe ser al menos 8 carácteres").required("Este campo es requerido"),
     phone: Yup.string().optional().matches(phoneRegExp, "Formato de número de teléfono no válido"),
-    address: Yup.string().optional()
-    
+    address: Yup.string().optional(),
+    imageUrl: Yup.string().optional().nullable()
+})
+
+export const brandSchema = Yup.object({
+    name: Yup.string("Ingresa un nombre").required("Este campo es requerido")
+})
+
+export const modelSchema = Yup.object({
+    name: Yup.string("Ingresa un nombre").required("Este campo es requerido"),
+    brandID: Yup.string().required("Se requiere la marca")
 })

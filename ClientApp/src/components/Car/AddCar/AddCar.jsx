@@ -7,7 +7,7 @@ import CarForm from '../CarForm';
 import { createCar, getModels } from '../../../helpers/carHelpers';
 import { Loading } from '../../Loading/Loading';
 
-function AddProduct() {
+function AddCar() {
     const [loading, setLoading] = useState(true)
     const { showAlert } = useAlert();
     const [modelData, setModelData] = useState([])
@@ -18,7 +18,7 @@ function AddProduct() {
             setModelData(data)
          })
          .catch(() => showAlert("danger", "Ha ocurrido un problema! Contacte con el soporte."))
-         .finally(setLoading(false))
+         .finally(() => setLoading(false))
     }, [showAlert])
 
 
@@ -51,7 +51,9 @@ function AddProduct() {
                                 price: 0.00,
                                 stock: 0,
                                 transmition: 'Automática',
-                                fuel: 'Gasolina'
+                                fuel: 'Gasolina',
+                                imageUrl: '',
+                                imageData: ''
                             }}
                             validationSchema={carSchema}
                             onSubmit={async (values) => {
@@ -69,7 +71,9 @@ function AddProduct() {
                                     Transmision: values.transmition,
                                     Combustible: values.fuel,
                                     Descripcion: values.description,
-                                    ModelID: Number(values.model)
+                                    ModelID: Number(values.model),
+                                    ImageURL: values.imageUrl,
+                                    ImageData: values.imageData
                                 }
 
                                 await createCar(request)
@@ -83,6 +87,7 @@ function AddProduct() {
                                     .catch(err => {
                                         showAlert("danger", err.message)
                                     })
+                                    .finally(() => sessionStorage.removeItem("tempImg"))
                             }}
                             >
                             { ({...args}) => <CarForm {...args} submitText={"Añadir"} modelData={modelData} /> }
@@ -95,4 +100,4 @@ function AddProduct() {
     )
 }
 
-export default AddProduct;
+export default AddCar;

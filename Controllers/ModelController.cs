@@ -21,7 +21,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
-            ReferenceHandler = ReferenceHandler.Preserve
+            ReferenceHandler = ReferenceHandler.Preserve,
         };
 
         public ModelController(CarDbContext context)
@@ -33,23 +33,42 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-            if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
-
-            var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success) return BadRequest(tokenValidation);
-
-            var models = await _context.Models.Include(m => m.Brand).ToListAsync();
-
-            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+            try
             {
-                var json = JsonSerializer.Serialize(models, jsonOptions);
+                var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                if (httpHeader == null) return BadRequest(new OperationResult("No autorizado", false));
 
-                return Ok(json);
-            }
-            else
+                var tokenValidation = TokenValidationResult.Verify(httpHeader);
+                if (!tokenValidation.success) return BadRequest(tokenValidation);
+
+                #pragma warning disable CS8602
+                var models = await _context.Models.Select(m => new
+                {
+                    m.Id,
+                    m.Nombre,
+                    m.BrandID,
+                    brand = new
+                    {
+                        m.Brand.Id,
+                        m.Brand.Nombre
+                    }
+                }).ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+                if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+                {
+                    var json = JsonSerializer.Serialize(models, jsonOptions);
+
+                    return Ok(json);
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }catch (Exception)
             {
-                return NotFound();
+                return StatusCode(500);
             }
         }
 
@@ -151,7 +170,7 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 bool brandExist = await _context.Brands.AnyAsync(b => b.Id == model.BrandID);
                 bool modelExist = await _context.Models.AnyAsync(m => m.Id == id);
 
-                if (brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
+                if (!brandExist) return BadRequest(new OperationResult("Id de marca no existe", false));
 
                 if (modelExist)
                 {

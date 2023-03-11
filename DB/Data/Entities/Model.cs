@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DB.Data.Entities
@@ -19,11 +20,14 @@ namespace DB.Data.Entities
         [MinLength(3)]
         [MaxLength(15)]
         public string Nombre { get; set; }
-
+        [JsonPropertyName("brandId")]
         public int BrandID { get; set; }
 
         [ForeignKey("BrandID")]
+        [JsonPropertyName("brand")]
         public virtual Brand? Brand { get; set; }
+
+        [JsonIgnore]
 
         public ICollection<Car>? Cars { get; set; }
     }
