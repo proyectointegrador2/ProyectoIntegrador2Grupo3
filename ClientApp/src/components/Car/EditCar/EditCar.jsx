@@ -4,7 +4,7 @@ import { carSchema } from '../../../helpers/formsSchema';
 import { Formik } from 'formik';
 import { useAlert } from '../../Context/AlertContext';
 import CarForm from '../CarForm';
-import { createCar, editCar, fetchCarAndModelData } from '../../../helpers/carHelpers';
+import { editCar, fetchCarAndModelData } from '../../../helpers/carHelpers';
 import { Loading } from '../../Loading/Loading';
 import { Navigate, useParams } from 'react-router-dom';
 
@@ -40,12 +40,12 @@ function EditCar() {
 
     return (
         <div className='container-fluid'>
-            <h1>Añadir Vehículo</h1>
+            <h1>Editar Vehículo</h1>
             <Row>
                 <Col>
                     <Card body className='shadow'>
                         <CardTitle>
-                            <h2 className='fw-bold'>Añadir Vehículo</h2>
+                            <h2 className='fw-bold'>Editar {carData.Nombre}</h2>
                         </CardTitle>
                         <CardBody className='p-0'>
                             <Formik
@@ -63,7 +63,9 @@ function EditCar() {
                                 price: carData.Precio,
                                 stock: carData.Stock,
                                 transmition: carData.Transmision,
-                                fuel: carData.Combustible
+                                fuel: carData.Combustible,
+                                imageUrl: carData.ImageURL,
+                                imageData: ''
                             }}
                             validationSchema={carSchema}
                             onSubmit={async (values) => {
@@ -81,7 +83,9 @@ function EditCar() {
                                     Transmision: values.transmition,
                                     Combustible: values.fuel,
                                     Descripcion: values.description,
-                                    ModelID: Number(values.model)
+                                    ModelID: Number(values.model),
+                                    ImageURL: values.imageUrl,
+                                    ImageData: values.imageData
                                 }
 
                                 await editCar(request, id)
@@ -95,6 +99,7 @@ function EditCar() {
                                     .catch(err => {
                                         showAlert("danger", err.message)
                                     })
+                                    .finally(() => sessionStorage.removeItem("tempImg"))
                             }}
                             >
                             { ({...args}) => <CarForm {...args} submitText={"Guardar cambios"} modelData={modelData} /> }

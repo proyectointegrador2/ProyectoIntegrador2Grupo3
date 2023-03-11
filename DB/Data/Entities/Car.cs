@@ -57,6 +57,10 @@ namespace DB.Data.Entities
         public string Combustible { get; set; } 
 
         public string Descripcion { get; set; }
+        public string? ImageURL { get; set; }
+
+        [NotMapped]
+        public byte[]? ImageData { get; set; }
 
         public int ModelID { get; set; }
         [ForeignKey("ModelID")]

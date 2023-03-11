@@ -51,7 +51,9 @@ function AddCar() {
                                 price: 0.00,
                                 stock: 0,
                                 transmition: 'Automática',
-                                fuel: 'Gasolina'
+                                fuel: 'Gasolina',
+                                imageUrl: '',
+                                imageData: ''
                             }}
                             validationSchema={carSchema}
                             onSubmit={async (values) => {
@@ -69,7 +71,9 @@ function AddCar() {
                                     Transmision: values.transmition,
                                     Combustible: values.fuel,
                                     Descripcion: values.description,
-                                    ModelID: Number(values.model)
+                                    ModelID: Number(values.model),
+                                    ImageURL: values.imageUrl,
+                                    ImageData: values.imageData
                                 }
 
                                 await createCar(request)
@@ -83,6 +87,7 @@ function AddCar() {
                                     .catch(err => {
                                         showAlert("danger", err.message)
                                     })
+                                    .finally(() => sessionStorage.removeItem("tempImg"))
                             }}
                             >
                             { ({...args}) => <CarForm {...args} submitText={"Añadir"} modelData={modelData} /> }

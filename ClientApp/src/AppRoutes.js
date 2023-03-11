@@ -20,7 +20,7 @@ import EditBrand from "./components/Brand/EditBrand/EditBrand";
 import AddModel from "./components/Model/AddModel/AddModel";
 import ModelList from "./components/Model/ModelList/ModelList";
 import EditModel from "./components/Model/EditModel/EditModel";
-import DesignInventory from "./components/Design-Inventory/DesignInventory";
+import CarList from "./components/Car/CarList/CarList";
 
 const AppRoutes = [
   {
@@ -35,7 +35,7 @@ const AppRoutes = [
       </AdminRoute>
   },
   {
-    path: '/dashboard/Edit-Product/:id',
+    path: '/dashboard/Edit-Car/:id',
     element:
       <AdminRoute>
         <EditCar/>
@@ -148,10 +148,10 @@ const AppRoutes = [
         element: <PagenotFound />
     },
     {
-        path: "/dashboard/Product-List",
+        path: "/dashboard/Car-List",
         element:
             <AdminRoute>
-                <DesignInventory />
+                <CarList />
         </AdminRoute>
     }
 ];

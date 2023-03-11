@@ -1,10 +1,14 @@
-﻿using DB.Data.Entities;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using DB.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeInventarioDeVentaDeVehiculos.Data.Context;
 using SistemaDeInventarioDeVentaDeVehiculos.Utils;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,15 +19,17 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
     public class CarController : ControllerBase
     {
         private readonly CarDbContext _context;
+        private readonly IConfiguration _configuration;
 
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
-        public CarController(CarDbContext context)
+        public CarController(CarDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/<CarController>
@@ -38,7 +44,27 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                 var tokenValidation = TokenValidationResult.Verify(httpHeader);
                 if (!tokenValidation.success) return BadRequest(tokenValidation);
 
-                var cars = await _context.Cars.ToListAsync();
+                #pragma warning disable CS8602
+                var cars = await _context.Cars.Select(c => new{
+                    c.Id,
+                    c.Nombre,
+                    c.ImageURL,
+                    model = new {
+                        c.Model.Id,
+                        c.Model.Nombre
+                    },
+                    brand = new {
+                        c.Model.Brand.Id,
+                        c.Model.Brand.Nombre
+                    },
+                    c.Color,
+                    c.Anio,
+                    c.Chasis,
+                    c.Placa,
+                    c.Precio,
+                    c.Stock,
+                }).ToListAsync();
+                #pragma warning restore CS8602
 
                 if (tokenValidation.dataSession != null)
                 {
@@ -96,43 +122,64 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCar([FromBody] Car car)
         {
-            var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-
-            if (httpHeader == null)
+            try
             {
-                return BadRequest(new OperationResult("No autorizado", false));
-            }
 
-            var tokenValidation = TokenValidationResult.Verify(httpHeader);
-            if (!tokenValidation.success)
-            {
-                return BadRequest(tokenValidation);
-            }
+                var httpHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-            if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
-            {
-                if (car == null)
+                if (httpHeader == null)
                 {
-                    return BadRequest(new OperationResult("Datos enviados invalidos", false));
+                    return BadRequest(new OperationResult("No autorizado", false));
                 }
 
-                bool modelExist = await _context.Models.AnyAsync(m => m.Id == car.ModelID);
-                if (!modelExist) return BadRequest(new OperationResult("Id del modelo no existe", false));
+                var tokenValidation = TokenValidationResult.Verify(httpHeader);
+                if (!tokenValidation.success)
+                {
+                    return BadRequest(tokenValidation);
+                }
 
-                bool chasisExist = await _context.Cars.AnyAsync(c => c.Chasis == car.Chasis);
-                if (chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
+                if (tokenValidation.dataSession != null && tokenValidation.dataSession.role == "admin")
+                {
+                    if (car == null)
+                    {
+                        return BadRequest(new OperationResult("Datos enviados invalidos", false));
+                    }
 
-                bool placaExist = await _context.Cars.AnyAsync(c => c.Placa == car.Placa);
-                if (placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
+                    bool modelExist = await _context.Models.AnyAsync(m => m.Id == car.ModelID);
+                    if (!modelExist) return BadRequest(new OperationResult("Id del modelo no existe", false));
+
+                    bool chasisExist = await _context.Cars.AnyAsync(c => c.Chasis == car.Chasis);
+                    if (chasisExist) return BadRequest(new OperationResult("codigo de chasis ya existe", false));
+
+                    bool placaExist = await _context.Cars.AnyAsync(c => c.Placa == car.Placa);
+                    if (placaExist) return BadRequest(new OperationResult("Placa del vehiculo ya existe", false));
 
 
-                _context.Cars.Add(car);
-                await _context.SaveChangesAsync();
+                    byte[]? imageData = car.ImageData;
 
-                return Ok(new OperationResult("Carro añadido Correctamente!", true));
+                    if(imageData != null)
+                    {
+                        var cloudinaryService = new CloudinaryService(_configuration);
+                        var imageUploadResult = cloudinaryService.UploadImage(imageData, car.Nombre);
+
+                        imageUploadResult.Wait();
+
+                        car.ImageURL = imageUploadResult.Result;
+                    }
+
+
+
+                    _context.Cars.Add(car);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new OperationResult("Carro añadido Correctamente!", true));
+                }
+
+                return StatusCode(403);
+            }catch(Exception)
+            {
+                return StatusCode(500);
             }
-
-            return StatusCode(403);
         }
 
 
@@ -179,7 +226,37 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
 
                 try
                 {
+                    byte[]? imageData = car.ImageData;
+
                     car.Id = id;
+
+                    if (imageData != null)
+                    {
+
+                        var url = car.ImageURL;
+
+                        var cloudinaryService = new CloudinaryService(_configuration);
+                        var imageUploadResult = cloudinaryService.UploadImage(imageData, car.Nombre);
+                        imageUploadResult.Wait();
+
+                        car.ImageURL = imageUploadResult.Result;
+
+                        _context.Entry(car).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+
+                        if (url != null)
+                        {
+                            var regex = new Regex(@"v\d+/(?<publicId>.+)");
+                            var match = regex.Match(url);
+                            var publicId = match.Groups["publicId"].Value;
+
+                            await cloudinaryService.DestroyImage(publicId);
+                        }
+
+                        return Ok(new OperationResult("Carro modificado correctamente!", true));
+                    }
+
+                    
                     _context.Entry(car).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     return Ok(new OperationResult("Carro modificado correctamente!", true));
@@ -224,13 +301,47 @@ namespace SistemaDeInventarioDeVentaDeVehiculos.Controllers
                     await _context.SaveChangesAsync();
 
                     return Ok(new OperationResult("Coche eliminado correctamente!", true));
-                }catch(Exception)
+                }catch(DbUpdateException dbExc)
                 {
+                    return BadRequest(new OperationResult("El vehiculo actual no puede ser eliminado debido a que ya existe una venta realizada por ella"));
+
+                }
+                catch(Exception) {
                     return StatusCode(500);
                 }
             }
 
             return StatusCode(403);
+        }
+
+        //POST api/<CarController>/upload
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile image)
+        {
+
+            try
+            {
+                if (image == null || image.Length == 0)
+                {
+                    return BadRequest(new OperationResult("No hay archivos seleccionados", false));
+                }
+
+                byte[] imageData;
+
+                using (var stream = new MemoryStream())
+                {
+                    await image.CopyToAsync(stream);
+                    imageData = stream.ToArray();
+                }
+
+                string base64string = Convert.ToBase64String(imageData);
+
+                return Ok(new OperationResult("datos imagen", true,base64string));
+            }
+            catch(Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

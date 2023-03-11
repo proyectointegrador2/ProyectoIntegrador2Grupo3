@@ -5,6 +5,16 @@ const MODEL_URL = "api/model"
 const BRAND_URL = "api/brand"
 
 /***********Car************/
+
+export const getCars = async() => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(CAR_URL, { headers })
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
 export const getCarByID = async(id) => {
     const headers = getHeadersConfiguration()
 
@@ -16,7 +26,7 @@ export const getCarByID = async(id) => {
 
 export const fetchCarAndModelData = async(carId) => {
     const headers = getHeadersConfiguration()
-    console.log(headers)
+
     return await Promise.all(
         [
             fetch(`${CAR_URL}/${carId}`, { headers }),
@@ -49,6 +59,27 @@ export const editCar = async(request, id) => {
     return await fetch(`${CAR_URL}/${id}`, {method: "PUT", headers, body: JSON.stringify(request)})
         .then(res => res.json())
         .then(data => data)
+        .catch(err => err)
+}
+
+export const deleteCar = async(id) => {
+    const headers = getHeadersConfiguration()
+
+    return await fetch(`${CAR_URL}/${id}`, {method: "DELETE", headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err)
+}
+
+export const uploadCarImage = async(image) => {
+    const headers = getHeadersConfiguration()
+    const formData = new FormData()
+
+    formData.append("image", image)
+
+
+    return await fetch(`${CAR_URL}/upload`, {method: 'POST', body: formData})
+        .then(res => res.json())
         .catch(err => err)
 }
 
