@@ -14,6 +14,7 @@ import ClientList from "./components/Client/ClientList/ClientList";
 import EditClient from "./components/Client/EditClient/EditClient";
 import PagenotFound from "./components/PagenotFound/PagenotFound";
 import EditCar from "./components/Car/EditCar/EditCar";
+import DesignInventory from "./components/Design-Inventory/DesignInventory";
 
 const AppRoutes = [
   {
@@ -97,6 +98,13 @@ const AppRoutes = [
     {
         path: '/PagenotFound',
         element: <PagenotFound />
+    },
+    {
+        path: "/dashboard/Product-List",
+        element:
+            <AdminRoute>
+                <DesignInventory />
+        </AdminRoute>
     }
 ];
 
