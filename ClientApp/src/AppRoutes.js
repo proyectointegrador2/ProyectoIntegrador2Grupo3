@@ -20,6 +20,7 @@ import EditBrand from "./components/Brand/EditBrand/EditBrand";
 import AddModel from "./components/Model/AddModel/AddModel";
 import ModelList from "./components/Model/ModelList/ModelList";
 import EditModel from "./components/Model/EditModel/EditModel";
+import DesignInventory from "./components/Design-Inventory/DesignInventory";
 
 const AppRoutes = [
   {
@@ -145,6 +146,13 @@ const AppRoutes = [
     {
         path: '/PagenotFound',
         element: <PagenotFound />
+    },
+    {
+        path: "/dashboard/Product-List",
+        element:
+            <AdminRoute>
+                <DesignInventory />
+        </AdminRoute>
     }
 ];
 
