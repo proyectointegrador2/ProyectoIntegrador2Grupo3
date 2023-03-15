@@ -2,10 +2,7 @@
 /* ==== BASE STYLES ====*/
 /* ==================== GLOBAL STYLES ======================= */
 
-html {
-  font-family: "Inter", sans-serif;
-  font-size: 15px;
-}
+
 
 /* ========================
 INCLUDE STYLES AND COMPONENTS
@@ -319,7 +316,7 @@ article:after,
 }
 
 .bg-pattern {
-  background-image: url(../images/banners/bg-pattern.svg), linear-gradient(135deg, #3167eb, #545454);
+  background-image: url("./images/Banner.jpg"), linear-gradient(135deg, #3167eb, #545454);
   background-size: cover, auto;
   background-repeat: no-repeat, repeat;
   background-position: 0px 0px, 50% 50%;
@@ -328,7 +325,7 @@ article:after,
 .bg-img {
   overflow: hidden;
   background-color: #ddd;
-  background-image: linear-gradient(135deg, rgba(49, 103, 235, 0.8), rgba(84, 84, 84, 0.9)), url("../images/banners/bg-cpu.jpg");
+  background-image: linear-gradient(135deg, rgba(49, 103, 235, 0.8), rgba(84, 84, 84, 0.9)), url("./images/Banner.jpg");
   background-position: 0px 0px, 50% 50%;
   background-size: auto cover;
 }
@@ -1064,7 +1061,7 @@ a[class*=card]:hover .title {
 }
 
 .price-old {
-  color: #969696;
+  color: red;
   margin-left: 3px;
   font-size: 85%;
 }
